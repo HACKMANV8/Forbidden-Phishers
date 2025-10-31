@@ -11,6 +11,9 @@ import VerificationStatus from "@/pages/EmailVerification/VerificationStatus";
 import ForgotPassword from "@/pages/ForgotPassword/ForgotPassword";
 import PasswordResetForm from "@/pages/ForgotPassword/PasswordResetForm";
 import InterviewResourcesPage from "./pages/InterviewResourcesPage/InterviewResourcesPage";
+import CoursesPage from "./pages/Courses/CoursesPage";
+import CreateCoursePage from "./pages/Courses/CreateCoursePage";
+import CourseDetailPage from "./pages/Courses/CourseDetailPage";
 
 const mainLayoutRoutes = [
   {
@@ -20,8 +23,22 @@ const mainLayoutRoutes = [
   },
   {
     path: "/interview-resources",
-    // index: true,
     element: <InterviewResourcesPage />,
+  },
+  {
+    path: "/courses",
+    element: <CoursesPage />,
+  },
+  {
+    path: "/courses/:id",
+    element: <CourseDetailPage />,
+  },
+];
+
+const protectedRoutes = [
+  {
+    path: "/courses/create",
+    element: <CreateCoursePage />,
   },
 ];
 
@@ -33,7 +50,7 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <ProtectedRoute />,
-        children: [],
+        children: protectedRoutes,
       },
       {
         path: "/",

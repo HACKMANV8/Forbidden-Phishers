@@ -1,15 +1,14 @@
-import express, { Request, Response } from 'express';
-import { config } from 'dotenv';
-import cors from 'cors';
-import cookieParser from 'cookie-parser';
-import http from 'http';
-import { Server } from 'socket.io';
-import globalErrorHandler from './middleware/globalErrorHandler';
-import passport from 'passport'
-import passportConfig from './config/passport';
-import authRouter from './auth/authRoute';
-
-
+import express, { Request, Response } from "express";
+import { config } from "dotenv";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import http from "http";
+import { Server } from "socket.io";
+import globalErrorHandler from "./middleware/globalErrorHandler";
+import passport from "passport";
+import passportConfig from "./config/passport";
+import authRouter from "./auth/authRoute";
+import courseRouter from "./courses/courseRoute";
 
 config();
 
@@ -35,16 +34,14 @@ app.use(cookieParser());
 app.use(passport.initialize());
 passportConfig(passport);
 
-
-
-app.get('/', (req: Request, res: Response) => {
+app.get("/", (req: Request, res: Response) => {
   res.json({
-    message: 'DSU DevHack Server is running',
+    message: "DSU DevHack Server is running",
   });
 });
 
-
-app.use('/api/v1/auth', authRouter);
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/courses", courseRouter);
 app.use(globalErrorHandler);
 
 export { server, io };

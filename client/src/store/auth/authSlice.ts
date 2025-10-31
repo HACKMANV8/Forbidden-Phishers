@@ -1,7 +1,7 @@
-import { backendUrl } from '@/config/backendUrl';
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { User } from '@/types';
-import axios from 'axios';
+import { backendUrl } from "@/config/backendUrl";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import type { User } from "@/types";
+import axios from "axios";
 
 interface AuthState {
   isLoggedIn: boolean;
@@ -25,54 +25,66 @@ const initialState: AuthState = {
   isResumeUploaded: false,
 };
 
-  export const silentRefresh = createAsyncThunk('auth/silentRefresh', async (_, { dispatch }) => {
+export const silentRefresh = createAsyncThunk(
+  "auth/silentRefresh",
+  async (_, { dispatch }) => {
     try {
-      const response = await axios.post(`${backendUrl}/api/v1/auth/refresh`, {}, { withCredentials: true });
+      const response = await axios.post(
+        `${backendUrl}/api/v1/auth/refresh`,
+        {},
+        { withCredentials: true }
+      );
       return response.data;
     } catch (error) {
       dispatch(logout());
       throw error;
     }
-  });
+  }
+);
 
-
-  const authSlice = createSlice({
-    name: 'auth',
-    initialState: initialState,
-    reducers: {
-      setAccessToken: (state, action: PayloadAction<string>) => {
-        state.accessToken = action.payload;
-        state.loading = false;
-        state.isLoggedIn = true;
-      },
-      logout: (state) => {
-        state.accessToken = null;
-        state.loading = false;
-        state.isLoggedIn = false;
-        state.user = null;
-        state.isResumeUploaded = false;
-      },
+const authSlice = createSlice({
+  name: "auth",
+  initialState: initialState,
+  reducers: {
+    setAccessToken: (state, action: PayloadAction<string>) => {
+      state.accessToken = action.payload;
+      state.loading = false;
+      state.isLoggedIn = true;
     },
-    extraReducers: (builder) => {
-      builder.addCase(silentRefresh.pending, (state) => {
-        state.loading = true;
-      });
-      builder.addCase(silentRefresh.fulfilled, (state, action: PayloadAction<AuthResponse>) => {
+    logout: (state) => {
+      state.accessToken = null;
+      state.loading = false;
+      state.isLoggedIn = false;
+      state.user = null;
+      state.isResumeUploaded = false;
+      // Clear localStorage
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(silentRefresh.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(
+      silentRefresh.fulfilled,
+      (state, action: PayloadAction<AuthResponse>) => {
         state.isLoggedIn = true;
         state.accessToken = action.payload.accessToken;
         state.loading = false;
         state.user = action.payload.user;
         state.isResumeUploaded = action.payload.isResumeUploaded;
-      });
-      builder.addCase(silentRefresh.rejected, (state) => {
-        state.loading = false;
-        state.isLoggedIn = false;
-      });
-    },
-  });
+        // Save token to localStorage
+        localStorage.setItem("accessToken", action.payload.accessToken);
+      }
+    );
+    builder.addCase(silentRefresh.rejected, (state) => {
+      state.loading = false;
+      state.isLoggedIn = false;
+    });
+  },
+});
 
-  export const { setAccessToken, logout } = authSlice.actions;
+export const { setAccessToken, logout } = authSlice.actions;
 
-  export default authSlice.reducer;
-
-
+export default authSlice.reducer;
