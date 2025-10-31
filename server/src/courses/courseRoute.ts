@@ -13,6 +13,11 @@ import {
   updateCourse,
   deleteCourse,
   optionalAuth,
+  getUserTests,
+  generateTest,
+  submitTest,
+  getCertificateData,
+  verifyCertificate,
 } from "./courseController";
 
 const router = Router();
@@ -29,12 +34,10 @@ const authenticateToken = (req: any, res: any, next: any) => {
       }
       if (!user) {
         console.error("🔴 No user found. Info:", info);
-        return res
-          .status(401)
-          .json({
-            error: "Unauthorized",
-            details: info?.message || "Invalid token",
-          });
+        return res.status(401).json({
+          error: "Unauthorized",
+          details: info?.message || "Invalid token",
+        });
       }
       req.user = user;
       next();
@@ -64,5 +67,22 @@ router.post(
 );
 router.put("/:id", authenticateToken, updateCourse as any);
 router.delete("/:id", authenticateToken, deleteCourse as any);
+
+// Test routes
+router.get("/:courseId/tests", authenticateToken, getUserTests as any);
+router.post("/:courseId/test/generate", authenticateToken, generateTest as any);
+router.post(
+  "/:courseId/test/:testId/submit",
+  authenticateToken,
+  submitTest as any
+);
+router.get(
+  "/:courseId/test/:testId/certificate",
+  authenticateToken,
+  getCertificateData as any
+);
+
+// Public certificate verification
+router.get("/verify-certificate/:certificateId", verifyCertificate as any);
 
 export default router;

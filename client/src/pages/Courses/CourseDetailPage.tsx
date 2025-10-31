@@ -12,6 +12,9 @@ import {
   ArrowLeft,
   Menu,
   X,
+  Award,
+  FileText,
+  Clock,
 } from "lucide-react";
 import MarkdownRenderer from "../../components/MarkdownRenderer";
 
@@ -46,11 +49,17 @@ export default function CourseDetailPage() {
   const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(null);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [tests, setTests] = useState<any[]>([]);
+  const [cooldownInfo, setCooldownInfo] = useState<any>(null);
+  const [cooldownTime, setCooldownTime] = useState<string>("");
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     fetchCourse();
-  }, [id]);
+    if (isLoggedIn) {
+      fetchTests();
+    }
+  }, [id, isLoggedIn]);
 
   const fetchCourse = async () => {
     try {
@@ -74,6 +83,72 @@ export default function CourseDetailPage() {
       setLoading(false);
     }
   };
+
+  const fetchTests = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.get(
+        `${backendUrl}/api/v1/courses/${id}/tests`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (response.data.success) {
+        setTests(response.data.tests);
+      }
+    } catch (error) {
+      console.error("Error fetching tests:", error);
+    }
+  };
+
+  const handleTakeTest = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.post(
+        `${backendUrl}/api/v1/courses/${id}/test/generate`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (response.data.success) {
+        navigate(`/courses/${id}/test/${response.data.test.id}`);
+      }
+    } catch (error: any) {
+      if (error.response?.status === 429) {
+        // Cooldown active
+        setCooldownInfo(error.response.data.cooldown);
+      } else {
+        console.error("Error generating test:", error);
+        alert("Failed to generate test. Please try again.");
+      }
+    }
+  };
+
+  // Update cooldown timer
+  useEffect(() => {
+    if (!cooldownInfo) return;
+
+    const updateTimer = () => {
+      const now = new Date().getTime();
+      const nextAvailable = new Date(cooldownInfo.nextAvailableAt).getTime();
+      const remaining = nextAvailable - now;
+
+      if (remaining <= 0) {
+        setCooldownInfo(null);
+        setCooldownTime("");
+        return;
+      }
+
+      const hours = Math.floor(remaining / (1000 * 60 * 60));
+      const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+
+      setCooldownTime(`${hours}h ${minutes}m ${seconds}s`);
+    };
+
+    updateTimer();
+    const interval = setInterval(updateTimer, 1000);
+
+    return () => clearInterval(interval);
+  }, [cooldownInfo]);
 
   const handleEnroll = async () => {
     if (!isLoggedIn) {
@@ -421,6 +496,133 @@ export default function CourseDetailPage() {
             )}
           </div>
         </div>
+
+        {/* Test Section */}
+        {isLoggedIn && course.is_enrolled && (
+          <div className="mt-8">
+            <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 border-2 border-[#E4D7B4]">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-[#335441] mb-2 flex items-center gap-2">
+                    <Award className="w-6 h-6" />
+                    Course Certification
+                  </h2>
+                  <p className="text-[#6B8F60]">
+                    Test your knowledge and earn a certificate
+                  </p>
+                </div>
+                {course.enrollment_data?.isCompleted && (
+                  <button
+                    onClick={handleTakeTest}
+                    disabled={!!cooldownInfo}
+                    className={`px-6 py-3 rounded-xl font-semibold transition-all flex items-center gap-2 ${
+                      cooldownInfo
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-gradient-to-r from-[#335441] to-[#46704A] hover:shadow-lg"
+                    } text-white`}
+                  >
+                    {cooldownInfo ? (
+                      <>
+                        <Clock className="w-5 h-5" />
+                        {cooldownTime}
+                      </>
+                    ) : (
+                      <>
+                        <FileText className="w-5 h-5" />
+                        Take Test
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+
+              {!course.enrollment_data?.isCompleted && (
+                <div className="bg-[#F9F6EE] p-6 rounded-xl border-2 border-[#E4D7B4]">
+                  <p className="text-[#6B8F60] text-center">
+                    Complete all chapters to unlock the certification test
+                  </p>
+                </div>
+              )}
+
+              {tests.length > 0 && (
+                <div className="mt-6">
+                  <h3 className="font-bold text-[#335441] mb-4">
+                    Test History
+                  </h3>
+                  <div className="space-y-3">
+                    {tests.map((test) => (
+                      <div
+                        key={test.id}
+                        className="flex items-center justify-between p-4 bg-[#F9F6EE] rounded-xl border border-[#E4D7B4]"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div
+                            className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                              test.hasPassed
+                                ? "bg-green-100"
+                                : test.status === "completed"
+                                ? "bg-red-100"
+                                : "bg-yellow-100"
+                            }`}
+                          >
+                            {test.hasPassed ? (
+                              <CheckCircle className="w-6 h-6 text-green-600" />
+                            ) : test.status === "completed" ? (
+                              <Circle className="w-6 h-6 text-red-600" />
+                            ) : (
+                              <FileText className="w-6 h-6 text-yellow-600" />
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-semibold text-[#335441]">
+                              {test.status === "in_progress"
+                                ? "In Progress"
+                                : test.hasPassed
+                                ? "Passed"
+                                : "Failed"}
+                            </p>
+                            <p className="text-sm text-[#6B8F60]">
+                              {test.status === "completed"
+                                ? `Score: ${test.score}% (${test.marksObtained}/${test.totalMarks})`
+                                : "Not submitted yet"}
+                            </p>
+                            <p className="text-xs text-[#A9B782]">
+                              {new Date(test.createdAt).toLocaleDateString()}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          {test.status === "in_progress" && (
+                            <button
+                              onClick={() =>
+                                navigate(`/courses/${id}/test/${test.id}`)
+                              }
+                              className="px-4 py-2 bg-[#335441] text-white rounded-lg font-semibold hover:bg-[#46704A] transition-all"
+                            >
+                              Continue
+                            </button>
+                          )}
+                          {test.status === "completed" && (
+                            <button
+                              onClick={() =>
+                                navigate(
+                                  `/courses/${id}/test/${test.id}/results`
+                                )
+                              }
+                              className="px-4 py-2 bg-[#6B8F60] text-white rounded-lg font-semibold hover:bg-[#46704A] transition-all"
+                            >
+                              View Results
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

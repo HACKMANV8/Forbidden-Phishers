@@ -790,4 +790,689 @@ export const deleteCourse = async (
   }
 };
 
+// Get user's tests for a course
+export const getUserTests = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<any> => {
+  try {
+    const { courseId } = req.params;
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Authentication required" });
+    }
+
+    const course = await prisma.course.findUnique({ where: { id: courseId } });
+    if (!course) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    // Check access
+    const hasAccess =
+      course.authorId === userId ||
+      (await prisma.courseEnrollment.findFirst({
+        where: { courseId, userId },
+      }));
+
+    if (!hasAccess) {
+      return res.status(403).json({ error: "Access denied" });
+    }
+
+    const tests = await prisma.courseTest.findMany({
+      where: { courseId, userId },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        status: true,
+        score: true,
+        hasPassed: true,
+        marksObtained: true,
+        totalMarks: true,
+        createdAt: true,
+        submittedAt: true,
+        questions: true,
+        testInstructions: true,
+        timeLimit: true,
+        passingScore: true,
+        evaluationResults: true,
+      },
+    });
+
+    // Parse evaluationResults for completed tests
+    const testsWithEvaluations = tests.map((test) => ({
+      ...test,
+      evaluations:
+        test.status === "completed" && test.evaluationResults
+          ? JSON.parse(test.evaluationResults)
+          : null,
+    }));
+
+    res.json({ success: true, tests: testsWithEvaluations });
+  } catch (error) {
+    console.error("Error fetching tests:", error);
+    res.status(500).json({ error: "Failed to fetch tests" });
+  }
+};
+
+// Generate test for a course
+export const generateTest = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<any> => {
+  try {
+    const { courseId } = req.params;
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Authentication required" });
+    }
+
+    const course = await prisma.course.findUnique({
+      where: { id: courseId },
+      include: {
+        chapters: {
+          where: { content: { not: null } },
+          select: { title: true, content: true },
+        },
+      },
+    });
+
+    if (!course) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    // Check access
+    const hasAccess =
+      course.authorId === userId ||
+      (await prisma.courseEnrollment.findFirst({
+        where: { courseId, userId },
+      }));
+
+    if (!hasAccess) {
+      return res.status(403).json({ error: "Access denied" });
+    }
+
+    if (course.chapters.length === 0) {
+      return res
+        .status(400)
+        .json({ error: "Course has no content for test generation" });
+    }
+
+    // Check cooldown (24 hours)
+    const existingTests = await prisma.courseTest.findMany({
+      where: { courseId, userId },
+      orderBy: { createdAt: "desc" },
+    });
+
+    if (existingTests.length > 0) {
+      const latestTest = existingTests[0];
+      const now = new Date();
+      const testCreatedAt = new Date(latestTest.createdAt);
+      const hoursDifference =
+        (now.getTime() - testCreatedAt.getTime()) / (1000 * 60 * 60);
+      const cooldownHours = 24;
+
+      if (hoursDifference < cooldownHours) {
+        const remainingHours = cooldownHours - hoursDifference;
+        return res.status(429).json({
+          error: "Test cooldown active",
+          message: `You must wait ${Math.ceil(
+            remainingHours
+          )} hours before generating a new test`,
+          cooldown: {
+            isActive: true,
+            remainingHours: Math.ceil(remainingHours),
+            nextAvailableAt: new Date(
+              testCreatedAt.getTime() + cooldownHours * 60 * 60 * 1000
+            ).toISOString(),
+          },
+          tests: existingTests.map((t) => ({
+            id: t.id,
+            status: t.status,
+            score: t.score,
+            hasPassed: t.hasPassed,
+            createdAt: t.createdAt,
+          })),
+        });
+      }
+
+      // Check for in-progress test
+      const inProgressTest = existingTests.find(
+        (t) => t.status === "in_progress"
+      );
+      if (inProgressTest) {
+        return res.json({
+          success: true,
+          message: "You have an in-progress test",
+          test: {
+            id: inProgressTest.id,
+            questions: JSON.parse(inProgressTest.questions),
+            testInstructions: JSON.parse(inProgressTest.testInstructions),
+            timeLimit: inProgressTest.timeLimit,
+            passingScore: inProgressTest.passingScore,
+            totalMarks: inProgressTest.totalMarks,
+            status: inProgressTest.status,
+            createdAt: inProgressTest.createdAt,
+          },
+        });
+      }
+    }
+
+    // Generate test with AI
+    const courseContent = course.chapters
+      .map((ch) => `Chapter: ${ch.title}\n${ch.content}`)
+      .join("\n\n");
+
+    const testPrompt = `CRITICAL: You must respond with VALID JSON ONLY. No markdown, no explanations, no additional text.
+
+You are a professional assessment specialist. Create a comprehensive certification test for the course "${
+      course.title
+    }" based on the provided course content.
+
+Course: ${course.title}
+Chapter Titles: ${course.chapters.map((ch: any) => ch.title).join(", ")}
+Course Content:
+${courseContent.substring(0, 10000)}
+
+Create 15-20 questions with mixed question types based on the course content:
+- Multiple Choice Questions (MCQ): Use EXACT type "mcq"
+- True/False Questions: Use EXACT type "true_false"
+- Short Answer Questions: Use EXACT type "short_answer"
+- Coding/Practical Questions: Use EXACT type "coding"
+- Situational Questions: Use EXACT type "situational"
+
+Each question must have specific mark weightage (3-10 marks based on complexity). Total marks should be around 100.
+
+FOR MCQ QUESTIONS:
+- MUST provide exactly 4 meaningful options
+- correctAnswer MUST be a number (0-3)
+- Options should be course-specific
+
+FOR TRUE_FALSE QUESTIONS:
+- MUST provide exactly ["True", "False"] as options
+- correctAnswer MUST be 0 (for True) or 1 (for False)
+
+FOR OTHER QUESTION TYPES:
+- Do NOT include options array or set it to empty array
+- Provide detailed sampleAnswer
+- Set correctAnswer to null
+
+RESPOND WITH THIS EXACT JSON FORMAT ONLY (NO TRAILING COMMAS):
+{
+  "questions": [
+    {
+      "type": "mcq",
+      "question": "Question text here",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correctAnswer": 0,
+      "keyPoints": ["Key point 1", "Key point 2"],
+      "sampleAnswer": "Sample correct answer",
+      "explanation": "Explanation of correct answer",
+      "marks": 5,
+      "difficulty": "easy",
+      "topic": "Relevant course topic"
+    }
+  ]
+}
+
+Requirements:
+- 15-20 questions (flexible)
+- Total marks around 100
+- Valid JSON only - NO markdown, NO comments, NO trailing commas
+- Cover all major course topics
+- Mix difficulty levels appropriately`;
+
+    console.log("🤖 Calling Groq API for test generation...");
+
+    const completion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are a professional assessment specialist. You MUST respond with valid JSON only. No markdown formatting, no code blocks, no explanations - just pure JSON. Ensure NO trailing commas in your JSON.",
+        },
+        { role: "user", content: testPrompt },
+      ],
+      model: "llama-3.3-70b-versatile",
+      temperature: 0.3,
+      max_tokens: 32000,
+    });
+
+    const aiResponse = completion.choices[0]?.message?.content;
+    if (!aiResponse) {
+      throw new Error("No response from AI");
+    }
+
+    console.log("🔍 Raw AI response length:", aiResponse.length);
+
+    let testData;
+
+    // Try to parse with cleanup
+    try {
+      // Remove markdown and trailing commas
+      let cleanedResponse = aiResponse
+        .replace(/```json\s*/gi, "")
+        .replace(/```\s*/g, "")
+        .replace(/^[^{]*/, "")
+        .replace(/[^}]*$/, "")
+        .replace(/,(\s*[}\]])/g, "$1") // Remove trailing commas
+        .trim();
+
+      testData = JSON.parse(cleanedResponse);
+      console.log("✅ JSON parse successful");
+    } catch (error) {
+      console.log("❌ JSON parse failed, using fallback test");
+
+      // Generate fallback test
+      const courseTopics = course.chapters
+        .map((ch: any) => ch.title)
+        .slice(0, 5);
+      const fallbackQuestions = [];
+
+      for (let i = 0; i < 15; i++) {
+        const topicIndex = i % courseTopics.length;
+        const topic = courseTopics[topicIndex] || "General";
+
+        if (i % 3 === 0) {
+          fallbackQuestions.push({
+            type: "mcq",
+            question: `What is a key concept related to ${topic}?`,
+            options: [
+              "Fundamental principles",
+              "Advanced techniques",
+              "Best practices",
+              "All of the above",
+            ],
+            correctAnswer: 3,
+            keyPoints: ["Understanding", topic],
+            sampleAnswer: "All aspects are important",
+            explanation: `Comprehensive understanding requires all areas`,
+            marks: 5,
+            difficulty: "medium",
+            topic: topic,
+          });
+        } else if (i % 3 === 1) {
+          fallbackQuestions.push({
+            type: "true_false",
+            question: `${topic} is an important component of this course.`,
+            options: ["True", "False"],
+            correctAnswer: 0,
+            keyPoints: ["Understanding", topic],
+            sampleAnswer: "True",
+            explanation: `${topic} is indeed important`,
+            marks: 5,
+            difficulty: "easy",
+            topic: topic,
+          });
+        } else {
+          fallbackQuestions.push({
+            type: "short_answer",
+            question: `Explain the importance of ${topic}.`,
+            options: [],
+            correctAnswer: null,
+            keyPoints: ["Explanation", topic],
+            sampleAnswer: `${topic} is crucial for understanding the course material.`,
+            explanation: "Students should demonstrate clear understanding",
+            marks: 7,
+            difficulty: "medium",
+            topic: topic,
+          });
+        }
+      }
+
+      testData = { questions: fallbackQuestions };
+      console.log("✅ Generated fallback test with 15 questions");
+    }
+
+    // Validate questions array exists
+    if (!testData.questions || !Array.isArray(testData.questions)) {
+      throw new Error("Invalid test structure: questions array missing");
+    }
+
+    console.log(`📝 Generated ${testData.questions.length} questions`);
+
+    // Ensure we have at least 10 questions
+    if (testData.questions.length < 10) {
+      throw new Error("Too few questions generated");
+    }
+
+    // Calculate total marks dynamically from questions
+    let totalMarks = testData.questions.reduce(
+      (sum: number, q: any) => sum + (q.marks || 5),
+      0
+    );
+
+    console.log(`📊 Initial total marks: ${totalMarks}`);
+
+    // Optionally adjust to target 100 marks (but keep it flexible)
+    // If marks are way off (< 50 or > 150), adjust them
+    if (totalMarks < 50 || totalMarks > 150) {
+      console.log(`⚠️ Adjusting marks from ${totalMarks} to 100`);
+      const adjustment = 100 / totalMarks;
+      testData.questions.forEach((q: any) => {
+        q.marks = Math.round((q.marks || 5) * adjustment);
+      });
+
+      // Recalculate
+      totalMarks = testData.questions.reduce(
+        (sum: number, q: any) => sum + q.marks,
+        0
+      );
+
+      // Final adjustment to exactly 100
+      if (totalMarks !== 100) {
+        testData.questions[testData.questions.length - 1].marks +=
+          100 - totalMarks;
+        totalMarks = 100;
+      }
+    }
+
+    console.log(
+      `✅ Test validated: ${testData.questions.length} questions, ${totalMarks} total marks`
+    );
+
+    const testInstructions = {
+      duration: 180,
+      totalQuestions: testData.questions.length,
+      totalMarks: totalMarks,
+      passingScore: 80,
+      instructions: [
+        "Read each question carefully before answering.",
+        "You have 180 minutes (3 hours) to complete the test.",
+        "All questions are mandatory.",
+        "Questions include multiple choice, true/false, short answer, coding, and situational types.",
+        "Each question has specific marks as indicated.",
+        "You need to score at least 80% to pass and receive a certificate.",
+        "The test will be automatically submitted when time expires.",
+      ],
+    };
+
+    const test = await prisma.courseTest.create({
+      data: {
+        courseId,
+        userId,
+        questions: JSON.stringify(testData.questions),
+        testInstructions: JSON.stringify(testInstructions),
+        timeLimit: 180,
+        passingScore: 80,
+        totalMarks: totalMarks,
+        status: "in_progress",
+      },
+    });
+
+    res.json({
+      success: true,
+      message: "Test generated successfully",
+      test: {
+        id: test.id,
+        questions: testData.questions,
+        testInstructions,
+        timeLimit: test.timeLimit,
+        passingScore: test.passingScore,
+        totalMarks: test.totalMarks,
+        createdAt: test.createdAt,
+      },
+    });
+  } catch (error) {
+    console.error("Error generating test:", error);
+    res.status(500).json({ error: "Failed to generate test" });
+  }
+};
+
+// Submit test answers
+export const submitTest = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<any> => {
+  try {
+    const { courseId, testId } = req.params;
+    const { answers } = req.body;
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Authentication required" });
+    }
+
+    const test = await prisma.courseTest.findFirst({
+      where: { id: testId, courseId, userId },
+    });
+
+    if (!test) {
+      return res.status(404).json({ error: "Test not found" });
+    }
+
+    if (test.status === "completed") {
+      return res.status(400).json({ error: "Test already submitted" });
+    }
+
+    const questions = JSON.parse(test.questions);
+
+    // Evaluate with AI
+    const evaluationPrompt = `Evaluate these test answers and provide detailed feedback.
+
+Questions and Answers:
+${questions
+  .map(
+    (q: any, i: number) => `
+Q${i + 1} [${q.marks} marks] (${q.type}): ${q.question}
+${
+  q.type === "mcq" || q.type === "true_false"
+    ? `Options: ${q.options.join(", ")}\nCorrect: ${q.options[q.correctAnswer]}`
+    : ""
+}
+Student Answer: ${answers[i] || "No answer"}
+Sample Answer: ${q.sampleAnswer}
+Key Points: ${q.keyPoints.join(", ")}
+`
+  )
+  .join("\n")}
+
+Respond with ONLY valid JSON:
+{
+  "evaluations": [
+    {
+      "questionIndex": 0,
+      "isCorrect": true,
+      "marksAwarded": 5,
+      "feedback": "Detailed feedback",
+      "strengths": ["point1"],
+      "improvements": ["point1"]
+    }
+  ]
+}`;
+
+    const completion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: "You are a fair evaluator. Respond with valid JSON only.",
+        },
+        { role: "user", content: evaluationPrompt },
+      ],
+      model: "llama-3.3-70b-versatile",
+      temperature: 0.2,
+      max_tokens: 16000,
+      response_format: { type: "json_object" },
+    });
+
+    const evalResponse = completion.choices[0]?.message?.content;
+    if (!evalResponse) {
+      throw new Error("No evaluation response");
+    }
+
+    const evaluationData = JSON.parse(evalResponse);
+    const marksObtained = evaluationData.evaluations.reduce(
+      (sum: number, e: any) => sum + (e.marksAwarded || 0),
+      0
+    );
+    const score = Math.round((marksObtained / test.totalMarks) * 100);
+    const hasPassed = score >= test.passingScore;
+
+    const updatedTest = await prisma.courseTest.update({
+      where: { id: testId },
+      data: {
+        answers: JSON.stringify(answers),
+        evaluationResults: JSON.stringify(evaluationData.evaluations),
+        marksObtained,
+        score,
+        hasPassed,
+        status: "completed",
+        submittedAt: new Date(),
+      },
+    });
+
+    res.json({
+      success: true,
+      message: "Test submitted successfully",
+      result: {
+        id: updatedTest.id,
+        score,
+        marksObtained,
+        totalMarks: test.totalMarks,
+        hasPassed,
+        evaluations: evaluationData.evaluations,
+        submittedAt: updatedTest.submittedAt,
+      },
+    });
+  } catch (error) {
+    console.error("Error submitting test:", error);
+    res.status(500).json({ error: "Failed to submit test" });
+  }
+};
+
+// Get certificate data
+export const getCertificateData = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<any> => {
+  try {
+    const { courseId, testId } = req.params;
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Authentication required" });
+    }
+
+    const test = await prisma.courseTest.findFirst({
+      where: { id: testId, courseId, userId },
+      include: {
+        course: {
+          include: {
+            chapters: { select: { id: true } },
+          },
+        },
+      },
+    });
+
+    if (!test) {
+      return res.status(404).json({ error: "Test not found" });
+    }
+
+    if (test.status !== "completed") {
+      return res
+        .status(400)
+        .json({ error: "Test must be completed to download certificate" });
+    }
+
+    if (!test.hasPassed) {
+      return res
+        .status(400)
+        .json({ error: "Test must be passed to download certificate" });
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const certificateData = {
+      studentName: user.username,
+      courseName: test.course.title,
+      instructorName: "Instructor",
+      completionDate: new Date(test.submittedAt!).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }),
+      certificateId: test.id,
+      score: test.score || 0,
+      totalMarks: test.totalMarks,
+      marksObtained: test.marksObtained || 0,
+    };
+
+    res.json({
+      success: true,
+      message: "Certificate data retrieved successfully",
+      certificateData,
+    });
+  } catch (error) {
+    console.error("Error retrieving certificate:", error);
+    res.status(500).json({ error: "Failed to retrieve certificate data" });
+  }
+};
+
+// Verify certificate (public)
+export const verifyCertificate = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  try {
+    const { certificateId } = req.params;
+
+    const test = await prisma.courseTest.findFirst({
+      where: {
+        id: certificateId,
+        status: "completed",
+        hasPassed: true,
+      },
+      include: {
+        course: { select: { title: true } },
+      },
+    });
+
+    if (!test) {
+      return res.json({
+        success: true,
+        isValid: false,
+        error: "Certificate not found or invalid",
+      });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: test.userId },
+      select: { username: true },
+    });
+
+    const certificateDetails = {
+      studentName: user?.username || "Unknown",
+      courseName: test.course.title,
+      instructorName: "Instructor",
+      completionDate: new Date(test.submittedAt!).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }),
+      certificateId: test.id,
+      score: test.score || 0,
+      totalMarks: test.totalMarks,
+      marksObtained: test.marksObtained || 0,
+      issueDate: new Date(test.submittedAt!).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }),
+    };
+
+    res.json({
+      success: true,
+      isValid: true,
+      certificateDetails,
+    });
+  } catch (error) {
+    console.error("Error verifying certificate:", error);
+    res.status(500).json({ error: "Failed to verify certificate" });
+  }
+};
+
 export { optionalAuth };

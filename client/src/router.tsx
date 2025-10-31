@@ -14,6 +14,9 @@ import InterviewResourcesPage from "./pages/InterviewResourcesPage/InterviewReso
 import CoursesPage from "./pages/Courses/CoursesPage";
 import CreateCoursePage from "./pages/Courses/CreateCoursePage";
 import CourseDetailPage from "./pages/Courses/CourseDetailPage";
+import CourseTestPage from "./pages/Courses/CourseTestPage";
+import TestResultsPage from "./pages/Courses/TestResultsPage";
+import CertificateVerificationPage from "./pages/Courses/CertificateVerificationPage";
 import PdfChat from "./pages/PdfChat/PdfChat";
 
 const mainLayoutRoutes = [
@@ -21,7 +24,8 @@ const mainLayoutRoutes = [
     path: "/",
     index: true,
     element: <Home />,
-  },{
+  },
+  {
     path: "/pdf-chat",
     element: <PdfChat />,
   },
@@ -37,12 +41,28 @@ const mainLayoutRoutes = [
     path: "/courses/:id",
     element: <CourseDetailPage />,
   },
+  {
+    path: "/verify-certificate",
+    element: <CertificateVerificationPage />,
+  },
 ];
 
 const protectedRoutes = [
   {
     path: "/courses/create",
     element: <CreateCoursePage />,
+  },
+  {
+    path: "/courses/:id/test",
+    element: <CourseTestPage />,
+  },
+  {
+    path: "/courses/:id/test/:testId",
+    element: <CourseTestPage />,
+  },
+  {
+    path: "/courses/:id/test/:testId/results",
+    element: <TestResultsPage />,
   },
 ];
 
