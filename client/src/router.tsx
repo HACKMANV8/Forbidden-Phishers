@@ -15,6 +15,7 @@ import CoursesPage from "./pages/Courses/CoursesPage";
 import CreateCoursePage from "./pages/Courses/CreateCoursePage";
 import CourseDetailPage from "./pages/Courses/CourseDetailPage";
 import PdfChat from "./pages/PdfChat/PdfChat";
+import InterviewQuestions from "./pages/InterviewQues/InterviewQuestions";
 
 const mainLayoutRoutes = [
   {
@@ -36,6 +37,10 @@ const mainLayoutRoutes = [
   {
     path: "/courses/:id",
     element: <CourseDetailPage />,
+  },
+  {
+    path: "/interview-questions",
+    element: <InterviewQuestions />,
   },
 ];
 
