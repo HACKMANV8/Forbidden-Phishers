@@ -1,31 +1,50 @@
-import express, { Application, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
+import { config } from 'dotenv';
 import cors from 'cors';
-import {config} from 'dotenv';
+import cookieParser from 'cookie-parser';
+import http from 'http';
+import { Server } from 'socket.io';
+import globalErrorHandler from './middleware/globalErrorHandler';
+import passport from 'passport'
+import passportConfig from './config/passport';
+import authRouter from './auth/authRoute';
+
+
 
 config();
 
-const app: Application = express();
+const app = express();
+const server = http.createServer(app);
 
-// Middleware
-app.use(cors());
+const io = new Server(server, {
+  cors: {
+    origin: process.env.FRONTEND_URL,
+  },
+});
+
+app.use(
+  cors({
+    credentials: true,
+    origin: process.env.FRONTEND_URL,
+  })
+);
+
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-// Routes
+app.use(passport.initialize());
+passportConfig(passport);
+
+
+
 app.get('/', (req: Request, res: Response) => {
   res.json({
-    message: 'Welcome to the TypeScript Express server!',
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
+    message: 'DSU DevHack Server is running',
   });
 });
 
-app.get('/health', (req: Request, res: Response) => {
-  res.status(200).json({
-    status: 'OK',
-    uptime: process.uptime(),
-    timestamp: new Date().toISOString()
-  });
-});
 
-export default app;
+app.use('/api/v1/auth', authRouter);
+app.use(globalErrorHandler);
+
+export { server, io };
