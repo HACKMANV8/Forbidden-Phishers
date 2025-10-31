@@ -18,6 +18,7 @@ import {
   GitGraphIcon,
   Briefcase,
   User as UserIcon,
+  Mic2,
 } from "lucide-react";
 import AdminNavLink from "../admin/AdminNavLink";
 
@@ -267,7 +268,8 @@ export default function ResponsiveNavbar() {
                   aiToolsOpen ||
                   isActive("/courses") ||
                   isActive("/roadmaps") ||
-                  isActive("/pdf-chatbot")
+                  isActive("/pdf-chatbot") ||
+                  isActive("/podcasts")
                     ? "text-[#335441] font-semibold"
                     : "text-[#6B8F60] hover:text-[#335441]"
                 }`}
@@ -324,11 +326,23 @@ export default function ResponsiveNavbar() {
                     PDF Chatbot
                   </Link>
                   <Link
+                    to="/podcasts"
+                    onClick={() => setAiToolsOpen(false)}
+                    className={`block px-4 py-2 text-sm transition-colors duration-200 ${
+                      isActive("/podcasts")
+                        ? "text-[#335441] font-semibold bg-[#F9F6EE]"
+                        : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
+                    }`}
+                    role="menuitem"
+                  >
+                    AI Podcast Studio
+                  </Link>
+                  <Link
                     to="/"
                     target="_blank"
                     onClick={() => setAiToolsOpen(false)}
                     className={`block px-4 py-2 text-sm rounded-b-lg transition-colors duration-200 ${
-                      isActive("/pdf-chatbot")
+                      isActive("/voxboard")
                         ? "text-[#335441] font-semibold bg-[#F9F6EE]"
                         : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
                     }`}
@@ -626,11 +640,23 @@ export default function ResponsiveNavbar() {
                 <span>PDF Chatbot</span>
               </Link>
               <Link
+                to="/podcasts"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 ${
+                  isActive("/podcasts")
+                    ? "text-[#335441] font-semibold bg-[#F9F6EE]"
+                    : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
+                }`}
+              >
+                <Mic2 size={20} />
+                <span>AI Podcast Studio</span>
+              </Link>
+              <Link
                 to="/"
                 target="_blank"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 ${
-                  isActive("/pdf-chatbot")
+                  isActive("/voxboard")
                     ? "text-[#335441] font-semibold bg-[#F9F6EE]"
                     : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
                 }`}
