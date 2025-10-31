@@ -18,6 +18,7 @@ import CourseTestPage from "./pages/Courses/CourseTestPage";
 import TestResultsPage from "./pages/Courses/TestResultsPage";
 import CertificateVerificationPage from "./pages/Courses/CertificateVerificationPage";
 import PdfChat from "./pages/PdfChat/PdfChat";
+import InterviewQuestions from "./pages/InterviewQues/InterviewQuestions";
 import PodcastPage from "@/pages/Podcast/PodcastPage";
 import PodcastPlayerPage from "@/pages/Podcast/PodcastPlayerPage";
 
@@ -42,6 +43,10 @@ const mainLayoutRoutes = [
   {
     path: "/courses/:id",
     element: <CourseDetailPage />,
+  },
+  {
+    path: "/interview-questions",
+    element: <InterviewQuestions />,
   },
   {
     path: "/verify-certificate",

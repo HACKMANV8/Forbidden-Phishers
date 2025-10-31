@@ -227,3 +227,17 @@ export interface PdfChatMessage {
   response: string;
   createdAt: string;
 }
+
+export interface Problem {
+  id: string;
+  title: string;
+  difficulty: "Easy" | "Medium" | "Hard";
+  frequency: number;
+  link: string;
+  attempted: boolean;
+  dateSolved: string;
+}
+
+export interface CompanyData {
+  [key: string]: string[];
+}
