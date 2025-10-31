@@ -1,7 +1,6 @@
-import Groq from 'groq-sdk';
-import fs from 'fs-extra';
-import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import Groq from "groq-sdk";
+import fs from "fs-extra";
+import path from "path";
 
 let groq: Groq | null = null;
 
@@ -19,12 +18,13 @@ export const generatePodcastScript = async (
   length: string
 ): Promise<string> => {
   const lengthMap: Record<string, string> = {
-    Short: '20 seconds (aim for 3-4 dialogue exchanges, keep responses very brief)',
-    Medium: '1 minute (aim for 6-8 dialogue exchanges, keep responses concise)',
-    Long: '2 minutes (aim for 12-16 dialogue exchanges, moderate detail)',
+    Short:
+      "20 seconds (aim for 3-4 dialogue exchanges, keep responses very brief)",
+    Medium: "1 minute (aim for 6-8 dialogue exchanges, keep responses concise)",
+    Long: "2 minutes (aim for 12-16 dialogue exchanges, moderate detail)",
   };
 
-  const duration = lengthMap[length] || '1 minute';
+  const duration = lengthMap[length] || "1 minute";
 
   const prompt = `You are an expert podcast script writer. Create an engaging, natural conversation between two hosts (Alex and Jordan) based on the following knowledge base. The podcast should be ${duration} long when spoken.
 
@@ -58,19 +58,19 @@ Podcast Script:`;
     const completion = await groqClient.chat.completions.create({
       messages: [
         {
-          role: 'user',
+          role: "user",
           content: prompt,
         },
       ],
-      model: 'llama-3.1-8b-instant',
+      model: "llama-3.1-8b-instant",
       temperature: 0.7,
       max_tokens: 4000,
     });
 
-    return completion.choices[0]?.message?.content || '';
+    return completion.choices[0]?.message?.content || "";
   } catch (error) {
-    console.error('Groq script generation error:', error);
-    throw new Error('Failed to generate podcast script');
+    console.error("Groq script generation error:", error);
+    throw new Error("Failed to generate podcast script");
   }
 };
 
@@ -80,14 +80,18 @@ export const generateAudio = async (
 ): Promise<string> => {
   try {
     // Extract dialogue for each speaker
-    const alexLines = extractSpeakerLines(script, 'Alex');
-    const jordanLines = extractSpeakerLines(script, 'Jordan');
+    const alexLines = extractSpeakerLines(script, "Alex");
+    const jordanLines = extractSpeakerLines(script, "Jordan");
 
     // Generate audio for each speaker
-    const alexAudioPath = await generateSpeakerAudio(alexLines, 'alex', podcastId);
+    const alexAudioPath = await generateSpeakerAudio(
+      alexLines,
+      "alex",
+      podcastId
+    );
     const jordanAudioPath = await generateSpeakerAudio(
       jordanLines,
-      'jordan',
+      "jordan",
       podcastId
     );
 
@@ -95,25 +99,25 @@ export const generateAudio = async (
     // In a production app, you'd want to merge/sequence the audio files
     return alexAudioPath;
   } catch (error) {
-    console.error('Audio generation error:', error);
-    throw new Error('Failed to generate audio');
+    console.error("Audio generation error:", error);
+    throw new Error("Failed to generate audio");
   }
 };
 
 const extractSpeakerLines = (script: string, speakerName: string): string => {
-  const lines = script.split('\n');
+  const lines = script.split("\n");
   const speakerLines: string[] = [];
 
   for (const line of lines) {
     if (line.trim().startsWith(`${speakerName}:`)) {
-      const dialogue = line.replace(`${speakerName}:`, '').trim();
+      const dialogue = line.replace(`${speakerName}:`, "").trim();
       if (dialogue) {
         speakerLines.push(dialogue);
       }
     }
   }
 
-  return speakerLines.join(' ');
+  return speakerLines.join(" ");
 };
 
 const generateSpeakerAudio = async (
@@ -122,18 +126,15 @@ const generateSpeakerAudio = async (
   podcastId: string
 ): Promise<string> => {
   try {
-    // Note: Groq doesn't currently support TTS, so this is a placeholder
-    // In a real implementation, you'd use a TTS service like ElevenLabs, OpenAI TTS, etc.
-
-    // For demo purposes, create a placeholder audio file path
+    const { v4: uuidv4 } = await import("uuid");
     const fileName = `${speaker}_${podcastId}_${uuidv4()}.mp3`;
-    const audioDir = path.join(process.cwd(), 'public/uploads/audio');
+    const audioDir = path.join(process.cwd(), "public/uploads/audio");
     const audioPath = path.join(audioDir, fileName);
 
     await fs.ensureDir(audioDir);
 
     // Create a placeholder file (in production, this would be actual audio)
-    await fs.writeFile(audioPath, 'placeholder audio content');
+    await fs.writeFile(audioPath, "placeholder audio content");
 
     console.log(`Generated placeholder audio for ${speaker}: ${fileName}`);
     return `/uploads/audio/${fileName}`;
