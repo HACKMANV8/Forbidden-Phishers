@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { resetPassword, verifyResetToken } from "@/api/authService";
-import{
+import {
   type ResetPasswordFormData,
   resetPasswordSchema,
 } from "@/validation/userSchema";
@@ -70,14 +70,14 @@ const PasswordResetForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-300 to-blue-400 flex items-center justify-center p-4">
-      <div className="max-w-lg w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
+    <div className="min-h-screen bg-gradient-to-br from-[#F9F6EE] to-[#EFE7D4] flex items-center justify-center p-4">
+      <div className="max-w-lg w-full space-y-8 bg-white p-8 rounded-xl shadow-lg border-2 border-[#E4D7B4]">
         <div className="text-center">
           <div className="flex items-center justify-center gap-2 mb-8">
-            <div className="p-2 bg-blue-500 rounded-xl">
+            <div className="p-2 bg-[#335441] rounded-xl">
               <Link2 className="h-6 w-6 text-white" />
             </div>
-            <span className="text-xl font-semibold">Finance</span>
+            <span className="text-xl font-semibold text-[#335441]">PrepX</span>
           </div>
         </div>
 
@@ -85,8 +85,8 @@ const PasswordResetForm = () => {
           <>
             {" "}
             <div className="flex flex-col justify-center items-center gap-5">
-              <BarLoader />
-              <span className="animate-fadeblink  text-blue-600">
+              <BarLoader color="#335441" />
+              <span className="animate-fadeblink text-[#335441]">
                 Verifying...
               </span>
             </div>
@@ -99,10 +99,10 @@ const PasswordResetForm = () => {
               <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
                 <XCircle className="h-8 w-8 text-red-500" />
               </div>
-              <h2 className="text-2xl font-semibold text-gray-900">
+              <h2 className="text-2xl font-semibold text-[#335441]">
                 Invalid Reset Link
               </h2>
-              <p className="mt-2 text-sm text-gray-600">
+              <p className="mt-2 text-sm text-[#6B8F60]">
                 The password reset link you clicked is invalid. It may have been
                 used already, expired or is malformed.
               </p>
@@ -110,7 +110,7 @@ const PasswordResetForm = () => {
 
             <div className="space-y-6">
               <Button
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 h-11"
+                className="w-full bg-[#335441] hover:bg-[#46704A] text-white py-2 h-11"
                 asChild
               >
                 <Link to="/forgot-password">
@@ -120,20 +120,20 @@ const PasswordResetForm = () => {
               </Button>
 
               <div className="text-center space-y-4">
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-[#6B8F60]">
                   Remember your password?{" "}
                   <Link
-                    to="/login"
-                    className="text-blue-500 hover:text-blue-600 font-medium"
+                    to="/Login"
+                    className="text-[#335441] hover:text-[#46704A] font-medium"
                   >
                     Sign in
                   </Link>
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-[#6B8F60]">
                   Need help?{" "}
                   <Link
                     to="#"
-                    className="text-blue-500 hover:text-blue-600 font-medium"
+                    className="text-[#335441] hover:text-[#46704A] font-medium"
                   >
                     Contact support
                   </Link>
@@ -146,10 +146,10 @@ const PasswordResetForm = () => {
         {status === "VALID_TOKEN" && (
           <>
             <div className="text-center">
-              <h2 className="mt-6 text-2xl font-semibold text-gray-900">
+              <h2 className="mt-6 text-2xl font-semibold text-[#335441]">
                 Reset Your Password
               </h2>
-              <p className="mt-2 text-sm text-gray-600">
+              <p className="mt-2 text-sm text-[#6B8F60]">
                 Enter your new password below.
               </p>
             </div>
@@ -168,7 +168,7 @@ const PasswordResetForm = () => {
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
-                      className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                      className="appearance-none rounded-md relative block w-full px-3 py-2 border-2 border-[#E4D7B4] placeholder-[#A9B782] text-[#335441] focus:outline-none focus:ring-2 focus:ring-[#335441] focus:border-[#335441] focus:z-10 sm:text-sm"
                       placeholder="Enter your new password"
                       {...register("password")}
                     />
@@ -178,9 +178,9 @@ const PasswordResetForm = () => {
                       onClick={togglePasswordVisibility}
                     >
                       {showPassword ? (
-                        <EyeOff className="h-5 w-5 text-gray-400" />
+                        <EyeOff className="h-5 w-5 text-[#6B8F60]" />
                       ) : (
-                        <Eye className="h-5 w-5 text-gray-400" />
+                        <Eye className="h-5 w-5 text-[#6B8F60]" />
                       )}
                     </button>
                   </div>
@@ -196,7 +196,7 @@ const PasswordResetForm = () => {
                   <Input
                     id="confirmPassword"
                     type="password"
-                    className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                    className="appearance-none rounded-md relative block w-full px-3 py-2 border-2 border-[#E4D7B4] placeholder-[#A9B782] text-[#335441] focus:outline-none focus:ring-2 focus:ring-[#335441] focus:border-[#335441] focus:z-10 sm:text-sm"
                     placeholder="Confirm your new password"
                     {...register("confirmPassword")}
                   />
@@ -209,7 +209,7 @@ const PasswordResetForm = () => {
 
                 <Button
                   type="submit"
-                  className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 h-11"
+                  className="w-full bg-[#335441] hover:bg-[#46704A] text-white py-2 h-11"
                   disabled={isSubmitting}
                 >
                   {isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />}{" "}
@@ -218,19 +218,19 @@ const PasswordResetForm = () => {
               </form>
 
               <div className="text-center space-y-4">
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-[#6B8F60]">
                   Need help?{" "}
                   <Link
                     to="#"
-                    className="text-blue-500 hover:text-blue-600 font-medium"
+                    className="text-[#335441] hover:text-[#46704A] font-medium"
                   >
                     Contact support
                   </Link>
                 </p>
 
                 <Link
-                  to="/login"
-                  className="inline-flex items-center text-sm text-blue-500 hover:text-blue-600 font-medium"
+                  to="/Login"
+                  className="inline-flex items-center text-sm text-[#335441] hover:text-[#46704A] font-medium"
                 >
                   Back to Sign in
                 </Link>
@@ -242,13 +242,13 @@ const PasswordResetForm = () => {
         {status === "RESET_SUCCESSFUL" && (
           <>
             <div className="text-center">
-              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
-                <CheckCircle className="h-8 w-8 text-green-500" />
+              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-[#F9F6EE] mb-4">
+                <CheckCircle className="h-8 w-8 text-[#46704A]" />
               </div>
-              <h2 className="text-2xl font-semibold text-gray-900">
+              <h2 className="text-2xl font-semibold text-[#335441]">
                 Password Changed Successfully
               </h2>
-              <p className="mt-2 text-sm text-gray-600">
+              <p className="mt-2 text-sm text-[#6B8F60]">
                 Your password has been successfully updated. You can now log in
                 with your new password.
               </p>
@@ -256,30 +256,30 @@ const PasswordResetForm = () => {
 
             <div className="space-y-6">
               <Button
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 h-11"
+                className="w-full bg-[#335441] hover:bg-[#46704A] text-white py-2 h-11"
                 asChild
               >
-                <Link to="/login">
+                <Link to="/Login">
                   <LogIn className="h-5 w-5 mr-2" />
                   Log In
                 </Link>
               </Button>
 
               <div className="text-center space-y-4">
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-[#6B8F60]">
                   Need help?{" "}
                   <Link
                     to="#"
-                    className="text-blue-500 hover:text-blue-600 font-medium"
+                    className="text-[#335441] hover:text-[#46704A] font-medium"
                   >
                     Contact support
                   </Link>
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-[#6B8F60]">
                   Back to{" "}
                   <Link
                     to="/"
-                    className="text-blue-500 hover:text-blue-600 font-medium"
+                    className="text-[#335441] hover:text-[#46704A] font-medium"
                   >
                     Home
                   </Link>

@@ -21,11 +21,10 @@ import {
 } from "lucide-react";
 import AdminNavLink from "../admin/AdminNavLink";
 
-
 export default function ResponsiveNavbar() {
   const location = useLocation();
   const dispatch = useDispatch();
-  
+
   // Get auth state from Redux store
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   const user = useSelector((state: RootState) => state.auth.user);
@@ -128,8 +127,8 @@ export default function ResponsiveNavbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/" className="flex items-center space-x-2">
-              <img src="/logo.png" alt="Edulume" className="w-8 h-8 " />
-              <span className="text-xl font-bold text-[#335441]">Edulume</span>
+              <img src="/logo.png" alt="PrepX" className="w-8 h-8 " />
+              <span className="text-xl font-bold text-[#335441]">PrepX</span>
             </Link>
             <div className="w-6 h-6 border-2 border-[#46704A] border-t-transparent rounded-full animate-spin" />
           </div>
@@ -143,8 +142,8 @@ export default function ResponsiveNavbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-2">
-            <img src="/logo.png" alt="Edulume" className="w-8 h-8 " />
-            <span className="text-xl font-bold text-[#335441]">Edulume</span>
+            <img src="/logo.png" alt="PrepX" className="w-8 h-8 " />
+            <span className="text-xl font-bold text-[#335441]">PrepX</span>
           </Link>
 
           {/* Mobile hamburger */}
@@ -325,7 +324,7 @@ export default function ResponsiveNavbar() {
                     PDF Chatbot
                   </Link>
                   <Link
-                    to="https://alienboard.vercel.app/"
+                    to="/"
                     target="_blank"
                     onClick={() => setAiToolsOpen(false)}
                     className={`block px-4 py-2 text-sm rounded-b-lg transition-colors duration-200 ${
@@ -335,7 +334,7 @@ export default function ResponsiveNavbar() {
                     }`}
                     role="menuitem"
                   >
-                    AlienBoard
+                    VoxBoard
                   </Link>
                 </div>
               )}
@@ -431,9 +430,9 @@ export default function ResponsiveNavbar() {
               </div>
             ) : (
               <Link
-                to="/auth"
+                to="/Login"
                 className={`flex items-center border-2 border-[#335441] space-x-2 px-4 py-2 rounded-lg transition-all duration-300 ${
-                  isActive("/auth")
+                  isActive("/Login")
                     ? "bg-[#335441] text-white"
                     : "text-[#335441] hover:bg-[#335441] hover:text-white"
                 }`}
@@ -473,8 +472,8 @@ export default function ResponsiveNavbar() {
             onClick={() => setIsMobileMenuOpen(false)}
             className="flex items-center space-x-2"
           >
-            <img src="/logo.png" alt="Edulume" className="w-8 h-8" />
-            <span className="text-xl font-bold text-[#335441]">Edulume</span>
+            <img src="/logo.png" alt="PrepX" className="w-8 h-8" />
+            <span className="text-xl font-bold text-[#335441]">PrepX</span>
           </Link>
           <button
             aria-label="Close menu"
@@ -627,7 +626,7 @@ export default function ResponsiveNavbar() {
                 <span>PDF Chatbot</span>
               </Link>
               <Link
-                to="https://alienboard.vercel.app/"
+                to="/"
                 target="_blank"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 ${
@@ -637,7 +636,7 @@ export default function ResponsiveNavbar() {
                 }`}
               >
                 <GitGraphIcon size={20} />
-                <span>AlienBoard</span>
+                <span>VoxBoard</span>
               </Link>
             </div>
           )}
@@ -699,10 +698,10 @@ export default function ResponsiveNavbar() {
             </div>
           ) : (
             <Link
-              to="/auth"
+              to="/Login"
               onClick={() => setIsMobileMenuOpen(false)}
               className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 ${
-                isActive("/auth")
+                isActive("/Login")
                   ? "text-[#335441] font-semibold bg-[#F9F6EE]"
                   : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
               }`}

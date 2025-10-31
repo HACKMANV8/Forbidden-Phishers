@@ -30,19 +30,19 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-300 to-blue-400 flex items-center justify-center p-4">
-      <div className="max-w-lg w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
+    <div className="min-h-screen bg-gradient-to-br from-[#F9F6EE] to-[#EFE7D4] flex items-center justify-center p-4">
+      <div className="max-w-lg w-full space-y-8 bg-white p-8 rounded-xl shadow-lg border-2 border-[#E4D7B4]">
         <div className="text-center">
           <div className="flex items-center justify-center gap-2 mb-8">
-            <div className="p-2 bg-blue-500 rounded-xl">
+            <div className="p-2 bg-[#335441] rounded-xl">
               <Link2 className="h-6 w-6 text-white" />
             </div>
-            <span className="text-xl font-semibold">Finance</span>
+            <span className="text-xl font-semibold text-[#335441]">PrepX</span>
           </div>
-          <h2 className="mt-6 text-2xl font-semibold text-gray-900">
+          <h2 className="mt-6 text-2xl font-semibold text-[#335441]">
             Forgot Password?
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm text-[#6B8F60]">
             {status
               ? "If an account exists for the email provided, you will receive password reset instructions."
               : "No problem! Enter your email address and we'll send you instructions to reset your password."}
@@ -64,7 +64,7 @@ const ForgotPassword = () => {
                   {...register("email")}
                   id="email"
                   type="email"
-                  className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  className="appearance-none rounded-md relative block w-full px-3 py-2 border-2 border-[#E4D7B4] placeholder-[#A9B782] text-[#335441] focus:outline-none focus:ring-2 focus:ring-[#335441] focus:border-[#335441] focus:z-10 sm:text-sm"
                   placeholder="Enter your email address"
                 />
                 {errors.email && (
@@ -76,7 +76,7 @@ const ForgotPassword = () => {
 
               <Button
                 type="submit"
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 h-11"
+                className="w-full bg-[#335441] hover:bg-[#46704A] text-white py-2 h-11"
                 disabled={isSubmitting}
               >
                 {isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />}{" "}
@@ -86,7 +86,7 @@ const ForgotPassword = () => {
             </form>
           ) : (
             <Button
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 h-11"
+              className="w-full bg-[#335441] hover:bg-[#46704A] text-white py-2 h-11"
               onClick={() => {
                 reset();
                 setStatus(false);
@@ -98,18 +98,18 @@ const ForgotPassword = () => {
           )}
 
           <div className="text-center space-y-4">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-[#6B8F60]">
               Remember your password?{" "}
               <Link
-                to="/login"
-                className="text-blue-500 hover:text-blue-600 font-medium"
+                to="/Login"
+                className="text-[#335441] hover:text-[#46704A] font-medium"
               >
                 Sign in
               </Link>
             </p>
             <Link
-              to="/login"
-              className="inline-flex items-center text-sm text-blue-500 hover:text-blue-600 font-medium"
+              to="/Login"
+              className="inline-flex items-center text-sm text-[#335441] hover:text-[#46704A] font-medium"
             >
               <ArrowLeft className="h-4 w-4 mr-1" />
               Back to Sign in
