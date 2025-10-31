@@ -353,7 +353,6 @@ export default function ResponsiveNavbar() {
                   </Link>
                   <Link
                     to="/"
-                    target="_blank"
                     onClick={() => setAiToolsOpen(false)}
                     className={`block px-4 py-2 text-sm rounded-b-lg transition-colors duration-200 ${
                       isActive("/voxboard")
@@ -363,6 +362,30 @@ export default function ResponsiveNavbar() {
                     role="menuitem"
                   >
                     VoxBoard
+                  </Link>
+                  <Link
+                    to="/interview"
+                    onClick={() => setAiToolsOpen(false)}
+                    className={`block px-4 py-2 text-sm rounded-b-lg transition-colors duration-200 ${
+                      isActive("/interview")
+                        ? "text-[#335441] font-semibold bg-[#F9F6EE]"
+                        : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
+                    }`}
+                    role="menuitem"
+                  >
+                    Create Interview
+                  </Link>
+                  <Link
+                    to="/your-interviews"
+                    onClick={() => setAiToolsOpen(false)}
+                    className={`block px-4 py-2 text-sm rounded-b-lg transition-colors duration-200 ${
+                      isActive("/your-interviews")
+                        ? "text-[#335441] font-semibold bg-[#F9F6EE]"
+                        : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
+                    }`}
+                    role="menuitem"
+                  >
+                    Your Interviews
                   </Link>
                 </div>
               )}
