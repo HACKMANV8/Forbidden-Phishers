@@ -68,7 +68,7 @@ export class CertificateGenerator {
     this.doc.setTextColor(51, 84, 65); // #335441
     this.doc.setFontSize(18);
     this.doc.setFont("times", "bold");
-    this.doc.text("TechCareer", centerX, 35, { align: "center" });
+    this.doc.text("PrepX", centerX, 35, { align: "center" });
 
     this.doc.setFontSize(10);
     this.doc.setFont("times", "normal");

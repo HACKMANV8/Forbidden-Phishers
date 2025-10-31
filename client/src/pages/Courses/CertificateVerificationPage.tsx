@@ -210,9 +210,7 @@ export default function CertificateVerificationPage() {
               <Award className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-[#335441]">
-                TechCareer
-              </h3>
+              <h3 className="text-lg font-semibold text-[#335441]">PrepX</h3>
               <p className="text-[#6B8F60]">
                 Professional Certification Authority
               </p>
@@ -227,7 +225,7 @@ export default function CertificateVerificationPage() {
         <div className="text-center mt-8">
           <p className="text-sm text-[#A9B782]">
             This verification is valid at the time of scanning. For any
-            questions about this certificate, please contact TechCareer.
+            questions about this certificate, please contact PrepX.
           </p>
         </div>
       </div>

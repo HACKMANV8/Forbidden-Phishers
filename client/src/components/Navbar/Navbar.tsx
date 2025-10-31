@@ -127,7 +127,7 @@ export default function ResponsiveNavbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/" className="flex items-center space-x-2">
-              <img src="/logo.png" alt="PrepX" className="w-8 h-8 " />
+              <img src="/logo.png" alt="PrepX" className="w-25 h-25 " />
               <span className="text-xl font-bold text-[#335441]">PrepX</span>
             </Link>
             <div className="w-6 h-6 border-2 border-[#46704A] border-t-transparent rounded-full animate-spin" />
@@ -142,7 +142,7 @@ export default function ResponsiveNavbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-2">
-            <img src="/logo.png" alt="PrepX" className="w-8 h-8 " />
+            <img src="/logo.png" alt="PrepX" className="w-25 h-25 " />
             <span className="text-xl font-bold text-[#335441]">PrepX</span>
           </Link>
 
@@ -472,7 +472,7 @@ export default function ResponsiveNavbar() {
             onClick={() => setIsMobileMenuOpen(false)}
             className="flex items-center space-x-2"
           >
-            <img src="/logo.png" alt="PrepX" className="w-8 h-8" />
+            <img src="/logo.png" alt="PrepX" className="w-25 h-25" />
             <span className="text-xl font-bold text-[#335441]">PrepX</span>
           </Link>
           <button
