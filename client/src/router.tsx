@@ -12,6 +12,7 @@ import ForgotPassword from "@/pages/ForgotPassword/ForgotPassword";
 import PasswordResetForm from "@/pages/ForgotPassword/PasswordResetForm";
 import InterviewResourcesPage from "./pages/InterviewResourcesPage/InterviewResourcesPage";
 import PdfChat from "./pages/PdfChat/PdfChat";
+import PodcastPage from "@/pages/Podcast/PodcastPage";
 
 const mainLayoutRoutes = [
   {
@@ -25,6 +26,10 @@ const mainLayoutRoutes = [
   {
     path: "/interview-resources",
     element: <InterviewResourcesPage />,
+  },
+  {
+    path: "/podcasts",
+    element: <PodcastPage />,
   },
 ];
 
