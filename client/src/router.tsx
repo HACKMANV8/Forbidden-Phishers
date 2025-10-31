@@ -10,12 +10,18 @@ import VerificationEmailSent from "@/pages/EmailVerification/VerificationEmailSe
 import VerificationStatus from "@/pages/EmailVerification/VerificationStatus";
 import ForgotPassword from "@/pages/ForgotPassword/ForgotPassword";
 import PasswordResetForm from "@/pages/ForgotPassword/PasswordResetForm";
+import InterviewResourcesPage from "./pages/InterviewResourcesPage/InterviewResourcesPage";
 
 const mainLayoutRoutes = [
   {
     path: "/",
     index: true,
     element: <Home />,
+  },
+  {
+    path: "/interview-resources",
+    // index: true,
+    element: <InterviewResourcesPage />,
   },
 ];
 
