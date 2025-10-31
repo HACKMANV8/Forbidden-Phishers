@@ -125,7 +125,7 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-[#F9F6EE]">
       {/* Hero Section - Split Layout */}
-      <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-[#F9F6EE] to-[#EFE7D4]">
+      <section className="relative min-h-screen flex items-center overflow-hidden bg-linear-to-br from-[#F9F6EE] to-[#EFE7D4]">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#A9B782] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
           <div
@@ -153,7 +153,7 @@ const Home = () => {
 
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-[#335441] mb-6 leading-tight">
                 Master Skills with
-                <span className="block mt-2 bg-gradient-to-r from-[#335441] to-[#6B8F60] bg-clip-text text-transparent">
+                <span className="block mt-2 bg-linear-to-r from-[#335441] to-[#6B8F60] bg-clip-text text-transparent">
                   AI Technology
                 </span>
               </h1>
@@ -200,7 +200,7 @@ const Home = () => {
               }`}
             >
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#335441] to-[#6B8F60] rounded-3xl transform rotate-3"></div>
+                <div className="absolute inset-0 bg-linear-to-br from-[#335441] to-[#6B8F60] rounded-3xl transform rotate-3"></div>
                 <div className="relative bg-white rounded-3xl p-4 shadow-2xl">
                   <img
                     src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop"
@@ -209,7 +209,7 @@ const Home = () => {
                   />
                   <div className="absolute -bottom-6 -left-6 bg-white rounded-2xl p-4 shadow-xl">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gradient-to-br from-[#335441] to-[#46704A] rounded-full flex items-center justify-center">
+                      <div className="w-12 h-12 bg-linear-to-br from-[#335441] to-[#46704A] rounded-full flex items-center justify-center">
                         <Sparkles className="w-6 h-6 text-white" />
                       </div>
                       <div>
@@ -248,7 +248,7 @@ const Home = () => {
               return (
                 <div
                   key={index}
-                  className="group relative bg-gradient-to-br from-[#F9F6EE] to-white rounded-2xl p-6 border-2 border-[#E4D7B4] hover:border-[#A9B782] transition-all duration-300 hover:shadow-xl"
+                  className="group relative bg-linear-to-br from-[#F9F6EE] to-white rounded-2xl p-6 border-2 border-[#E4D7B4] hover:border-[#A9B782] transition-all duration-300 hover:shadow-xl"
                 >
                   <div
                     className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300"
@@ -273,7 +273,7 @@ const Home = () => {
       </section>
 
       {/* Video Demo Section */}
-      <section className="py-24 bg-gradient-to-br from-[#335441] to-[#46704A]">
+      <section className="py-24 bg-linear-to-br from-[#335441] to-[#46704A]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">
@@ -318,7 +318,7 @@ const Home = () => {
               const Icon = benefit.icon;
               return (
                 <div key={index} className="text-center">
-                  <div className="w-20 h-20 bg-gradient-to-br from-[#335441] to-[#6B8F60] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                  <div className="w-20 h-20 bg-linear-to-br from-[#335441] to-[#6B8F60] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                     <Icon className="w-10 h-10 text-white" />
                   </div>
                   <h3 className="text-2xl font-bold text-[#335441] mb-3">
@@ -335,7 +335,7 @@ const Home = () => {
       </section>
 
       {/* Final CTA Section */}
-      <section className="py-24 bg-gradient-to-br from-[#EFE7D4] to-[#E4D7B4]">
+      <section className="py-24 bg-linear-to-br from-[#EFE7D4] to-[#E4D7B4]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl sm:text-5xl font-bold text-[#335441] mb-6">
             Ready to Start Your Journey?

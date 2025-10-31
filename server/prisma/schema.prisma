@@ -163,3 +163,23 @@ model CourseTest {
   @@unique([courseId, userId, createdAt])
   @@map("course_tests")
 }
+
+// Podcast
+
+
+model Podcast {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  description   String?
+  knowledgeBase String   @map("knowledge_base")
+  length        String   // "Short", "Medium", "Long"
+  script        String?
+  audioPath     String?  @map("audio_path")
+  videoPath     String?  @map("video_path")
+  status        String   @default("pending") // "pending", "processing", "completed", "error"
+  errorMessage  String?  @map("error_message")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@map("podcasts")
+}

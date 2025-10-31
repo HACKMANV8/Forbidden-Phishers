@@ -24,7 +24,7 @@ const Footer: React.FC = () => {
           {/* Brand Section */}
           <div className="lg:col-span-1">
             <div className="flex items-center space-x-2 mb-4">
-              <img src="/logo.png" alt="PrepX" className="w-8 h-8" />
+              <img src="/logo.png" alt="PrepX" className="w-25 h-25" />
               <span className="text-xl font-bold text-[#335441]">PrepX</span>
             </div>
             <p className="text-[#6B8F60] text-sm mb-6 leading-relaxed">

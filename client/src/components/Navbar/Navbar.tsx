@@ -18,6 +18,7 @@ import {
   GitGraphIcon,
   Briefcase,
   User as UserIcon,
+  Mic2,
 } from "lucide-react";
 import AdminNavLink from "../admin/AdminNavLink";
 
@@ -127,7 +128,7 @@ export default function ResponsiveNavbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/" className="flex items-center space-x-2">
-              <img src="/logo.png" alt="PrepX" className="w-8 h-8 " />
+              <img src="/logo.png" alt="PrepX" className="w-25 h-25 " />
               <span className="text-xl font-bold text-[#335441]">PrepX</span>
             </Link>
             <div className="w-6 h-6 border-2 border-[#46704A] border-t-transparent rounded-full animate-spin" />
@@ -142,7 +143,7 @@ export default function ResponsiveNavbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-2">
-            <img src="/logo.png" alt="PrepX" className="w-8 h-8 " />
+            <img src="/logo.png" alt="PrepX" className="w-25 h-25 " />
             <span className="text-xl font-bold text-[#335441]">PrepX</span>
           </Link>
 
@@ -267,7 +268,8 @@ export default function ResponsiveNavbar() {
                   aiToolsOpen ||
                   isActive("/courses") ||
                   isActive("/roadmaps") ||
-                  isActive("/pdf-chatbot")
+                  isActive("/pdf-chatbot") ||
+                  isActive("/podcasts")
                     ? "text-[#335441] font-semibold"
                     : "text-[#6B8F60] hover:text-[#335441]"
                 }`}
@@ -324,11 +326,23 @@ export default function ResponsiveNavbar() {
                     PDF Chatbot
                   </Link>
                   <Link
+                    to="/podcasts"
+                    onClick={() => setAiToolsOpen(false)}
+                    className={`block px-4 py-2 text-sm transition-colors duration-200 ${
+                      isActive("/podcasts")
+                        ? "text-[#335441] font-semibold bg-[#F9F6EE]"
+                        : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
+                    }`}
+                    role="menuitem"
+                  >
+                    AI Podcast Studio
+                  </Link>
+                  <Link
                     to="/"
                     target="_blank"
                     onClick={() => setAiToolsOpen(false)}
                     className={`block px-4 py-2 text-sm rounded-b-lg transition-colors duration-200 ${
-                      isActive("/pdf-chatbot")
+                      isActive("/voxboard")
                         ? "text-[#335441] font-semibold bg-[#F9F6EE]"
                         : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
                     }`}
@@ -447,7 +461,7 @@ export default function ResponsiveNavbar() {
 
       {/* Overlay */}
       <div
-        className={`fixed inset-0 z-[55] bg-black/50 transition-opacity duration-300 ${
+        className={`fixed inset-0 z-55 bg-black/50 transition-opacity duration-300 ${
           isMobileMenuOpen
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
@@ -458,7 +472,7 @@ export default function ResponsiveNavbar() {
 
       {/* Side Sheet */}
       <div
-        className={`fixed top-0 left-0 h-screen w-80 max-w-[85vw] bg-white border-r-2 border-[#E4D7B4] shadow-2xl transform transition-transform duration-300 ease-in-out z-[60] ${
+        className={`fixed top-0 left-0 h-screen w-80 max-w-[85vw] bg-white border-r-2 border-[#E4D7B4] shadow-2xl transform transition-transform duration-300 ease-in-out z-60 ${
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         role="dialog"
@@ -472,7 +486,7 @@ export default function ResponsiveNavbar() {
             onClick={() => setIsMobileMenuOpen(false)}
             className="flex items-center space-x-2"
           >
-            <img src="/logo.png" alt="PrepX" className="w-8 h-8" />
+            <img src="/logo.png" alt="PrepX" className="w-25 h-25" />
             <span className="text-xl font-bold text-[#335441]">PrepX</span>
           </Link>
           <button
@@ -626,11 +640,23 @@ export default function ResponsiveNavbar() {
                 <span>PDF Chatbot</span>
               </Link>
               <Link
+                to="/podcasts"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 ${
+                  isActive("/podcasts")
+                    ? "text-[#335441] font-semibold bg-[#F9F6EE]"
+                    : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
+                }`}
+              >
+                <Mic2 size={20} />
+                <span>AI Podcast Studio</span>
+              </Link>
+              <Link
                 to="/"
                 target="_blank"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 ${
-                  isActive("/pdf-chatbot")
+                  isActive("/voxboard")
                     ? "text-[#335441] font-semibold bg-[#F9F6EE]"
                     : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
                 }`}
