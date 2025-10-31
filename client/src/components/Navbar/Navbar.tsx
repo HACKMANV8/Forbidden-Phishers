@@ -2,6 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState } from "@/store/store";
+import { logout as logoutAction } from "@/store/auth/authSlice";
 import {
   FileText,
   BookOpen,
@@ -14,23 +17,20 @@ import {
   Map,
   GitGraphIcon,
   Briefcase,
-  User,
+  User as UserIcon,
 } from "lucide-react";
 import AdminNavLink from "../admin/AdminNavLink";
-import { getUserProfile, logout } from "../../utils/api";
-import type { User as UserType } from "../../types";
-import { removeAuthToken } from "../../utils/auth";
 
-interface NavbarProps {
-  authenticated: boolean | null;
-  onAuthChange: () => void;
-}
 
-export default function ResponsiveNavbar({
-  authenticated,
-  onAuthChange,
-}: NavbarProps) {
+export default function ResponsiveNavbar() {
   const location = useLocation();
+  const dispatch = useDispatch();
+  
+  // Get auth state from Redux store
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+  const user = useSelector((state: RootState) => state.auth.user);
+  const loading = useSelector((state: RootState) => state.auth.loading);
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const [resourcesOpen, setResourcesOpen] = useState(false);
@@ -45,16 +45,7 @@ export default function ResponsiveNavbar({
 
   // profile state preserved
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-  const [user, setUser] = useState<UserType | null>(null);
   const profileRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (authenticated === true) {
-      fetchUserProfile();
-    } else if (authenticated === false) {
-      setUser(null);
-    }
-  }, [authenticated]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -87,26 +78,15 @@ export default function ResponsiveNavbar({
     };
   }, []);
 
-  const fetchUserProfile = async () => {
-    try {
-      const response = await getUserProfile();
-      setUser(response.user);
-    } catch (error) {
-      console.error("Failed to fetch user profile:", error);
-      onAuthChange();
-    }
-  };
-
   const handleLogout = async () => {
     try {
-      await logout();
+      dispatch(logoutAction());
+      window.location.href = "/";
     } catch (error) {
       console.error("Logout failed:", error);
-      removeAuthToken();
+      dispatch(logoutAction());
+      window.location.href = "/";
     }
-    setUser(null);
-    onAuthChange();
-    window.location.href = "/";
   };
 
   const isActive = (path: string) => location.pathname === path;
@@ -142,7 +122,7 @@ export default function ResponsiveNavbar({
   };
 
   // Show loading state while checking authentication
-  if (authenticated === null) {
+  if (loading) {
     return (
       <nav className="bg-white/95 border-b-2 border-[#E4D7B4] sticky top-0 z-50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -362,7 +342,7 @@ export default function ResponsiveNavbar({
             </div>
 
             {/* Auth area */}
-            {authenticated ? (
+            {isLoggedIn ? (
               <div className="relative" ref={profileRef}>
                 <button
                   onClick={() => setIsProfileDropdownOpen((v) => !v)}
@@ -400,7 +380,7 @@ export default function ResponsiveNavbar({
                     </div>
                     <div className="py-1">
                       <AdminNavLink
-                        authenticated={authenticated}
+                        authenticated={isLoggedIn}
                         onMobileMenuClose={() =>
                           setIsProfileDropdownOpen(false)
                         }
@@ -663,7 +643,7 @@ export default function ResponsiveNavbar({
           )}
 
           {/* Auth */}
-          {authenticated ? (
+          {isLoggedIn ? (
             <div className="border-t-2 border-[#E4D7B4] pt-2 mt-2">
               <div className="px-3 py-2">
                 <div className="flex items-center space-x-3 mb-3">
@@ -686,7 +666,7 @@ export default function ResponsiveNavbar({
                 </div>
               </div>
               <AdminNavLink
-                authenticated={authenticated}
+                authenticated={isLoggedIn}
                 onMobileMenuClose={() => setIsMobileMenuOpen(false)}
                 isMobile={true}
               />
@@ -695,7 +675,7 @@ export default function ResponsiveNavbar({
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="flex items-center space-x-2 px-3 py-2 text-[#6B8F60] hover:text-[#335441] transition-colors duration-300"
               >
-                <User size={20} />
+                <UserIcon size={20} />
                 <span>Change Username</span>
               </Link>
               <Link

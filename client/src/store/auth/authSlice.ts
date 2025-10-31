@@ -1,15 +1,29 @@
 import { backendUrl } from '@/config/backendUrl';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import type { User } from '@/types';
 import axios from 'axios';
 
-  
-  const initialState = {
-    isLoggedIn : false,
-    user: null,
-    accessToken: null,
-    loading: true,
-    isResumeUploaded: false,
-  };
+interface AuthState {
+  isLoggedIn: boolean;
+  user: User | null;
+  accessToken: string | null;
+  loading: boolean;
+  isResumeUploaded: boolean;
+}
+
+interface AuthResponse {
+  accessToken: string;
+  user: User;
+  isResumeUploaded: boolean;
+}
+
+const initialState: AuthState = {
+  isLoggedIn: false,
+  user: null,
+  accessToken: null,
+  loading: true,
+  isResumeUploaded: false,
+};
 
   export const silentRefresh = createAsyncThunk('auth/silentRefresh', async (_, { dispatch }) => {
     try {
@@ -26,20 +40,24 @@ import axios from 'axios';
     name: 'auth',
     initialState: initialState,
     reducers: {
-      setAccessToken: (state, action) => {
+      setAccessToken: (state, action: PayloadAction<string>) => {
         state.accessToken = action.payload;
         state.loading = false;
+        state.isLoggedIn = true;
       },
       logout: (state) => {
         state.accessToken = null;
         state.loading = false;
+        state.isLoggedIn = false;
+        state.user = null;
+        state.isResumeUploaded = false;
       },
     },
     extraReducers: (builder) => {
       builder.addCase(silentRefresh.pending, (state) => {
         state.loading = true;
       });
-      builder.addCase(silentRefresh.fulfilled, (state, action) => {
+      builder.addCase(silentRefresh.fulfilled, (state, action: PayloadAction<AuthResponse>) => {
         state.isLoggedIn = true;
         state.accessToken = action.payload.accessToken;
         state.loading = false;
