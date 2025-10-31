@@ -60,6 +60,10 @@ const mainLayoutRoutes = [
     path: "/podcasts/:id",
     element: <PodcastPlayerPage />,
   },
+  {
+    path: "/interview-questions",
+    element: <InterviewQuestions />,
+  },
 ];
 
 const protectedRoutes = [
