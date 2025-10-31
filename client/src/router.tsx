@@ -21,6 +21,10 @@ import PdfChat from "./pages/PdfChat/PdfChat";
 import InterviewQuestions from "./pages/InterviewQues/InterviewQuestions";
 import PodcastPage from "@/pages/Podcast/PodcastPage";
 import PodcastPlayerPage from "@/pages/Podcast/PodcastPlayerPage";
+import InterviewHelp from "@/pages/InterviewHelp/InterviewHelp";
+import YourInterviews from "@/pages/YourInterviews/YourInterviews";
+import Results from "@/pages/Results/Results";
+import Interview from "@/pages/AI_Interview/Interview";
 
 const mainLayoutRoutes = [
   {
@@ -63,7 +67,17 @@ const mainLayoutRoutes = [
   {
     path: "/interview-questions",
     element: <InterviewQuestions />,
-  },
+  },{
+        path: "/interview",
+        element: <InterviewHelp />,
+    },
+    {
+        path: "/your-interviews",
+        element: <YourInterviews />,
+    },{
+        path: "/interview/results/:interviewId",
+        element: <Results />,
+    }
 ];
 
 const protectedRoutes = [
@@ -124,7 +138,10 @@ const router = createBrowserRouter([
         path: "/reset-password/:resetToken",
         element: <PasswordResetForm />,
       },
-
+       {
+                path: "/interview/:interviewId",
+                element: <Interview />,
+            },
       {
         path: "*",
         element: <NotFound />,
