@@ -60,6 +60,110 @@ model PasswordResetToken {
   createdAt        DateTime @default(now())
 }
 
+// Course Models
+model Course {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  topic       String
+  authorId    String   @map("author_id") @db.ObjectId
+  isPublic    Boolean  @default(true) @map("is_public")
+  views       Int      @default(0)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  chapters    CourseChapter[]
+  bookmarks   CourseBookmark[]
+  enrollments CourseEnrollment[]
+  tests       CourseTest[]
+
+  @@map("courses")
+}
+
+model CourseChapter {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  courseId    String   @map("course_id") @db.ObjectId
+  title       String
+  description String
+  content     String?
+  orderIndex  Int      @map("order_index")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  course   Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  progress ChapterProgress[]
+
+  @@map("course_chapters")
+}
+
+model CourseBookmark {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  courseId  String   @map("course_id") @db.ObjectId
+  userId    String   @map("user_id") @db.ObjectId
+  createdAt DateTime @default(now()) @map("created_at")
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, userId])
+  @@map("course_bookmarks")
+}
+
+model CourseEnrollment {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  courseId     String    @map("course_id") @db.ObjectId
+  userId       String    @map("user_id") @db.ObjectId
+  enrolledAt   DateTime  @default(now()) @map("enrolled_at")
+  completedAt  DateTime? @map("completed_at")
+  isCompleted  Boolean   @default(false) @map("is_completed")
+  progressPercentage Int @default(0) @map("progress_percentage")
+  lastAccessedAt DateTime? @map("last_accessed_at")
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, userId])
+  @@map("course_enrollments")
+}
+
+model ChapterProgress {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  chapterId   String   @map("chapter_id") @db.ObjectId
+  userId      String   @map("user_id") @db.ObjectId
+  isCompleted Boolean  @default(false) @map("is_completed")
+  completedAt DateTime? @map("completed_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  chapter CourseChapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@unique([chapterId, userId])
+  @@map("chapter_progress")
+}
+
+model CourseTest {
+  id                 String    @id @default(auto()) @map("_id") @db.ObjectId
+  courseId           String    @map("course_id") @db.ObjectId
+  userId             String    @map("user_id") @db.ObjectId
+  questions          String
+  testInstructions   String    @map("test_instructions")
+  answers            String?
+  evaluationResults  String?   @map("evaluation_results")
+  timeLimit          Int       @map("time_limit") @default(180)
+  passingScore       Int       @map("passing_score") @default(80)
+  totalMarks         Int       @map("total_marks") @default(100)
+  marksObtained      Float?    @map("marks_obtained")
+  score              Int?
+  hasPassed          Boolean?  @map("has_passed")
+  status             String    @default("in_progress")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  submittedAt        DateTime? @map("submitted_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, userId, createdAt])
+  @@map("course_tests")
+}
+
 // Podcast
 
 

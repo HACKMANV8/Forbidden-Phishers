@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Syntax highlighting for code blocks */
+@import "highlight.js/styles/github.css";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -117,4 +120,31 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f9f6ee;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #335441 0%, #46704a 100%);
+  border-radius: 10px;
+  border: 2px solid #f9f6ee;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #46704a 0%, #6b8f60 100%);
+}
+
+/* Firefox Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #335441 #f9f6ee;
 }
