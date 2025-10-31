@@ -10,13 +10,17 @@ import VerificationEmailSent from "@/pages/EmailVerification/VerificationEmailSe
 import VerificationStatus from "@/pages/EmailVerification/VerificationStatus";
 import ForgotPassword from "@/pages/ForgotPassword/ForgotPassword";
 import PasswordResetForm from "@/pages/ForgotPassword/PasswordResetForm";
+import PdfChat from "./pages/PdfChat/PdfChat";
 
 const mainLayoutRoutes = [
   {
     path: "/",
     index: true,
     element: <Home />,
-  },
+  },{
+    path: "/pdf-chat",
+    element: <PdfChat />,
+  }
 ];
 
 const router = createBrowserRouter([
