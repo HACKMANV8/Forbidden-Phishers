@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Upload, FileText, Loader2 } from "lucide-react";
+import { Upload, FileText, Loader2, Sparkles, Clock, Zap } from "lucide-react";
 import { CreatePodcastRequest } from "@/types/podcasts";
 
 interface PodcastFormProps {
@@ -42,11 +42,20 @@ export default function PodcastForm({ onSubmit, isLoading }: PodcastFormProps) {
     }
   };
 
+  const lengthOptions = [
+    { value: "Short", duration: "3-5 min", icon: Zap },
+    { value: "Medium", duration: "5-10 min", icon: Clock },
+    { value: "Long", duration: "10-15 min", icon: Sparkles },
+  ];
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Title */}
       <div>
-        <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="title"
+          className="block text-sm font-bold text-[#335441] mb-2"
+        >
           Podcast Title *
         </label>
         <input
@@ -55,95 +64,118 @@ export default function PodcastForm({ onSubmit, isLoading }: PodcastFormProps) {
           required
           value={formData.title}
           onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="Enter podcast title"
+          className="w-full px-4 py-3 border-2 border-[#E4D7B4] rounded-xl focus:ring-2 focus:ring-[#335441] focus:border-[#335441] text-[#335441] placeholder-[#A9B782] transition-all"
+          placeholder="e.g., The Future of AI in Education"
         />
       </div>
 
       {/* Description */}
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="description"
+          className="block text-sm font-bold text-[#335441] mb-2"
+        >
           Description (Optional)
         </label>
         <textarea
           id="description"
           value={formData.description}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, description: e.target.value })
+          }
           rows={3}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="Brief description of your podcast"
+          className="w-full px-4 py-3 border-2 border-[#E4D7B4] rounded-xl focus:ring-2 focus:ring-[#335441] focus:border-[#335441] text-[#335441] placeholder-[#A9B782] transition-all"
+          placeholder="Brief description of your podcast topic..."
         />
       </div>
 
       {/* Length */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-bold text-[#335441] mb-3">
           Podcast Length *
         </label>
-        <div className="grid grid-cols-3 gap-3">
-          {(["Short", "Medium", "Long"] as const).map((length) => (
+        <div className="grid grid-cols-3 gap-4">
+          {lengthOptions.map(({ value, duration, icon: Icon }) => (
             <button
-              key={length}
+              key={value}
               type="button"
-              onClick={() => setFormData({ ...formData, length })}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                formData.length === length
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              onClick={() => setFormData({ ...formData, length: value as any })}
+              className={`relative p-4 rounded-xl font-semibold transition-all duration-300 border-2 ${
+                formData.length === value
+                  ? "bg-gradient-to-br from-[#335441] to-[#46704A] text-white border-[#335441] shadow-lg scale-105"
+                  : "bg-white text-[#335441] border-[#E4D7B4] hover:border-[#335441] hover:shadow-md"
               }`}
             >
-              {length}
+              <Icon
+                className={`w-6 h-6 mx-auto mb-2 ${
+                  formData.length === value ? "text-white" : "text-[#335441]"
+                }`}
+              />
+              <div className="text-base">{value}</div>
+              <div
+                className={`text-xs mt-1 ${
+                  formData.length === value
+                    ? "text-[#E4D7B4]"
+                    : "text-[#6B8F60]"
+                }`}
+              >
+                {duration}
+              </div>
             </button>
           ))}
         </div>
-        <p className="mt-2 text-sm text-gray-500">
-          Short: 3-5 min | Medium: 5-10 min | Long: 10-15 min
-        </p>
       </div>
 
       {/* Input Mode Toggle */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-bold text-[#335441] mb-3">
           Knowledge Base Input *
         </label>
         <div className="flex gap-3 mb-4">
           <button
             type="button"
             onClick={() => setInputMode("text")}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+            className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 border-2 ${
               inputMode === "text"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                ? "bg-gradient-to-r from-[#335441] to-[#46704A] text-white border-[#335441] shadow-lg"
+                : "bg-white text-[#335441] border-[#E4D7B4] hover:border-[#335441] hover:shadow-md"
             }`}
           >
-            <FileText className="w-4 h-4" />
+            <FileText className="w-5 h-5" />
             Text Input
           </button>
           <button
             type="button"
             onClick={() => setInputMode("file")}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+            className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 border-2 ${
               inputMode === "file"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                ? "bg-gradient-to-r from-[#335441] to-[#46704A] text-white border-[#335441] shadow-lg"
+                : "bg-white text-[#335441] border-[#E4D7B4] hover:border-[#335441] hover:shadow-md"
             }`}
           >
-            <Upload className="w-4 h-4" />
+            <Upload className="w-5 h-5" />
             File Upload
           </button>
         </div>
 
         {inputMode === "text" ? (
-          <textarea
-            required={inputMode === "text"}
-            value={formData.knowledgeText}
-            onChange={(e) => setFormData({ ...formData, knowledgeText: e.target.value })}
-            rows={8}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Paste your content here... (minimum 50 words)"
-          />
+          <div className="relative">
+            <textarea
+              required={inputMode === "text"}
+              value={formData.knowledgeText}
+              onChange={(e) =>
+                setFormData({ ...formData, knowledgeText: e.target.value })
+              }
+              rows={10}
+              className="w-full px-4 py-3 border-2 border-[#E4D7B4] rounded-xl focus:ring-2 focus:ring-[#335441] focus:border-[#335441] text-[#335441] placeholder-[#A9B782] transition-all font-mono text-sm"
+              placeholder="Paste your content here... AI will transform it into an engaging podcast conversation! (minimum 50 words)"
+            />
+            <div className="absolute bottom-3 right-3 text-xs text-[#6B8F60] bg-white px-2 py-1 rounded">
+              {formData.knowledgeText.split(" ").filter((w) => w).length} words
+            </div>
+          </div>
         ) : (
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+          <div className="border-2 border-dashed border-[#E4D7B4] rounded-xl p-8 bg-[#F9F6EE] hover:border-[#335441] transition-all">
             <input
               type="file"
               accept=".txt,.md"
@@ -156,30 +188,37 @@ export default function PodcastForm({ onSubmit, isLoading }: PodcastFormProps) {
               htmlFor="file-upload"
               className="flex flex-col items-center cursor-pointer"
             >
-              <Upload className="w-12 h-12 text-gray-400 mb-2" />
-              <span className="text-sm text-gray-600">
-                {file ? file.name : "Click to upload .txt or .md file"}
+              <div className="w-16 h-16 bg-gradient-to-br from-[#335441] to-[#46704A] rounded-2xl flex items-center justify-center mb-4 shadow-lg">
+                <Upload className="w-8 h-8 text-white" />
+              </div>
+              <span className="text-base font-semibold text-[#335441] mb-1">
+                {file ? file.name : "Click to upload your content"}
               </span>
-              <span className="text-xs text-gray-500 mt-1">Max size: 10MB</span>
+              <span className="text-sm text-[#6B8F60]">
+                Supports .txt and .md files (Max 10MB)
+              </span>
             </label>
           </div>
         )}
       </div>
 
       {/* Submit Button */}
-      <div className="flex justify-end gap-3">
+      <div className="flex justify-end gap-3 pt-4">
         <button
           type="submit"
           disabled={isLoading}
-          className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#335441] to-[#46704A] text-white rounded-xl font-bold text-lg hover:from-[#46704A] hover:to-[#6B8F60] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-xl hover:shadow-2xl"
         >
           {isLoading ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              Creating...
+              <Loader2 className="w-5 h-5 animate-spin" />
+              AI is Creating Magic...
             </>
           ) : (
-            "Create Podcast"
+            <>
+              <Sparkles className="w-5 h-5" />
+              Generate AI Podcast
+            </>
           )}
         </button>
       </div>

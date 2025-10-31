@@ -19,6 +19,7 @@ import TestResultsPage from "./pages/Courses/TestResultsPage";
 import CertificateVerificationPage from "./pages/Courses/CertificateVerificationPage";
 import PdfChat from "./pages/PdfChat/PdfChat";
 import PodcastPage from "@/pages/Podcast/PodcastPage";
+import PodcastPlayerPage from "@/pages/Podcast/PodcastPlayerPage";
 
 const mainLayoutRoutes = [
   {
@@ -46,6 +47,14 @@ const mainLayoutRoutes = [
     path: "/verify-certificate",
     element: <CertificateVerificationPage />,
   },
+  {
+    path: "/podcasts",
+    element: <PodcastPage />,
+  },
+  {
+    path: "/podcasts/:id",
+    element: <PodcastPlayerPage />,
+  },
 ];
 
 const protectedRoutes = [
@@ -64,10 +73,6 @@ const protectedRoutes = [
   {
     path: "/courses/:id/test/:testId/results",
     element: <TestResultsPage />,
-  },
-  {
-    path: "/podcasts",
-    element: <PodcastPage />,
   },
 ];
 
