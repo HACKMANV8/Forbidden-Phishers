@@ -95,7 +95,7 @@ function PodcastPage() {
   return (
     <div className="min-h-screen bg-[#F9F6EE]">
       {/* Header */}
-      <header className="bg-gradient-to-br from-[#335441] to-[#46704A] shadow-lg">
+      <header className="bg-linear-to-br from-[#335441] to-[#46704A] shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
@@ -116,7 +116,7 @@ function PodcastPage() {
         {/* Create Form */}
         {showForm && (
           <div className="mb-8">
-            <div className="bg-gradient-to-br from-white to-[#F9F6EE] rounded-2xl shadow-xl p-6 border-2 border-[#E4D7B4]">
+            <div className="bg-linear-to-br from-white to-[#F9F6EE] rounded-2xl shadow-xl p-6 border-2 border-[#E4D7B4]">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-[#335441]">
                   Create New Podcast
@@ -138,7 +138,7 @@ function PodcastPage() {
 
         {/* Error State */}
         {error && (
-          <div className="mb-8 bg-gradient-to-br from-red-50 to-white border-2 border-red-200 rounded-2xl p-4 shadow-lg">
+          <div className="mb-8 bg-linear-to-br from-red-50 to-white border-2 border-red-200 rounded-2xl p-4 shadow-lg">
             <div className="flex items-center">
               <AlertTriangle className="w-5 h-5 text-[#335441] mr-2" />
               <p className="text-[#335441] font-medium">
@@ -180,8 +180,8 @@ function PodcastPage() {
                 <span className="ml-2 text-[#6B8F60] font-medium">Loading podcasts...</span>
               </div>
             ) : podcasts.length === 0 ? (
-              <div className="text-center py-16 bg-gradient-to-br from-white to-[#F9F6EE] rounded-2xl border-2 border-[#E4D7B4] shadow-xl">
-                <div className="w-20 h-20 bg-gradient-to-br from-[#335441] to-[#6B8F60] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <div className="text-center py-16 bg-linear-to-br from-white to-[#F9F6EE] rounded-2xl border-2 border-[#E4D7B4] shadow-xl">
+                <div className="w-20 h-20 bg-linear-to-br from-[#335441] to-[#6B8F60] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                   <Mic2 className="w-10 h-10 text-white" />
                 </div>
                 <h3 className="text-2xl font-bold text-[#335441] mb-2">

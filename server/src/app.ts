@@ -47,29 +47,6 @@ app.get('/', (req: Request, res: Response) => {
   });
 });
 
-// Health check endpoint
-app.get('/api/health', (req: Request, res: Response) => {
-  res.json({ 
-    status: 'OK', 
-    message: 'DSCE Hackman Server is running',
-    environment: {
-      GROQ_API_KEY: process.env.GROQ_API_KEY ? '✅ Loaded' : '❌ Missing',
-      HEYGEN_API_KEY: process.env.HEYGEN_API_KEY ? '✅ Loaded' : '❌ Missing',
-    }
-  });
-});
-
-// Health check endpoint
-app.get('/api/health', (req: Request, res: Response) => {
-  res.json({ 
-    status: 'OK', 
-    message: 'DSCE Hackman Server is running',
-    environment: {
-      GROQ_API_KEY: process.env.GROQ_API_KEY ? '✅ Loaded' : '❌ Missing',
-      HEYGEN_API_KEY: process.env.HEYGEN_API_KEY ? '✅ Loaded' : '❌ Missing',
-    }
-  });
-});
 
 // Health check endpoint
 app.get('/api/health', (req: Request, res: Response) => {
@@ -84,7 +61,7 @@ app.get('/api/health', (req: Request, res: Response) => {
 });
 
 // API Routes
-// app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/auth", authRouter);
 app.use('/api/podcasts', podcastRouter);
 
 app.use("/api/v1/courses", courseRouter);

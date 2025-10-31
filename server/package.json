@@ -29,6 +29,7 @@
     "fs-extra": "^11.3.2",
     "groq-sdk": "^0.34.0",
     "http-errors": "^2.0.0",
+    "humanize-ms": "^2.0.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
     "nodemailer": "^7.0.10",

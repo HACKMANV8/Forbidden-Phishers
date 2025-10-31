@@ -461,7 +461,7 @@ export default function ResponsiveNavbar() {
 
       {/* Overlay */}
       <div
-        className={`fixed inset-0 z-[55] bg-black/50 transition-opacity duration-300 ${
+        className={`fixed inset-0 z-55 bg-black/50 transition-opacity duration-300 ${
           isMobileMenuOpen
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
@@ -472,7 +472,7 @@ export default function ResponsiveNavbar() {
 
       {/* Side Sheet */}
       <div
-        className={`fixed top-0 left-0 h-screen w-80 max-w-[85vw] bg-white border-r-2 border-[#E4D7B4] shadow-2xl transform transition-transform duration-300 ease-in-out z-[60] ${
+        className={`fixed top-0 left-0 h-screen w-80 max-w-[85vw] bg-white border-r-2 border-[#E4D7B4] shadow-2xl transform transition-transform duration-300 ease-in-out z-60 ${
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         role="dialog"
