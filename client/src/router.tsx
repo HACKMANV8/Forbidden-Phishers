@@ -14,12 +14,16 @@ import InterviewResourcesPage from "./pages/InterviewResourcesPage/InterviewReso
 import CoursesPage from "./pages/Courses/CoursesPage";
 import CreateCoursePage from "./pages/Courses/CreateCoursePage";
 import CourseDetailPage from "./pages/Courses/CourseDetailPage";
+import PdfChat from "./pages/PdfChat/PdfChat";
 
 const mainLayoutRoutes = [
   {
     path: "/",
     index: true,
     element: <Home />,
+  },{
+    path: "/pdf-chat",
+    element: <PdfChat />,
   },
   {
     path: "/interview-resources",
