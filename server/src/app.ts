@@ -12,7 +12,8 @@ import authRouter from './auth/authRoute';
 import podcastRouter from './podcast/podcasts';
 import courseRouter from "./courses/courseRoute";
 import industryInsightsRouter from "./industry/industryInsights";
-
+import livekitRouter from './livekit/livekitRoute';
+import interviewRouter from './interview/interviewRoute';
 
 
 config();
@@ -64,9 +65,10 @@ app.get('/api/health', (req: Request, res: Response) => {
 // API Routes
 app.use("/api/v1/auth", authRouter);
 app.use('/api/podcasts', podcastRouter);
-
 app.use("/api/v1/courses", courseRouter);
 app.use("/api/industry", industryInsightsRouter);
+app.use('/api/v1/livekit', livekitRouter);
+app.use('/api/v1/interview', interviewRouter);
 app.use(globalErrorHandler);
 
 export { server, io };

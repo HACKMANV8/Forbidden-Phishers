@@ -19,6 +19,7 @@ import {
   Briefcase,
   User as UserIcon,
   Mic2,
+  Code,
 } from "lucide-react";
 import AdminNavLink from "../admin/AdminNavLink";
 
@@ -184,7 +185,8 @@ export default function ResponsiveNavbar() {
                   resourcesOpen ||
                   isActive("/pdfs") ||
                   isActive("/ebooks") ||
-                  isActive("/interview-resources")
+                  isActive("/interview-resources") ||
+                  isActive("/interview-questions")
                     ? "text-[#335441] font-semibold"
                     : "text-[#6B8F60] hover:text-[#335441]"
                 }`}
@@ -231,7 +233,7 @@ export default function ResponsiveNavbar() {
                   <Link
                     to="/interview-resources"
                     onClick={() => setResourcesOpen(false)}
-                    className={`block px-4 py-2 text-sm rounded-b-lg transition-colors duration-200 ${
+                    className={`block px-4 py-2 text-sm transition-colors duration-200 ${
                       isActive("/interview-resources")
                         ? "text-[#335441] font-semibold bg-[#F9F6EE]"
                         : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
@@ -239,6 +241,18 @@ export default function ResponsiveNavbar() {
                     role="menuitem"
                   >
                     Interview Resources
+                  </Link>
+                  <Link
+                    to="/interview-questions"
+                    onClick={() => setResourcesOpen(false)}
+                    className={`block px-4 py-2 text-sm rounded-b-lg transition-colors duration-200 ${
+                      isActive("/interview-questions")
+                        ? "text-[#335441] font-semibold bg-[#F9F6EE]"
+                        : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
+                    }`}
+                    role="menuitem"
+                  >
+                    DSA Questions
                   </Link>
                 </div>
               )}
@@ -339,7 +353,6 @@ export default function ResponsiveNavbar() {
                   </Link>
                   <Link
                     to="/"
-                    target="_blank"
                     onClick={() => setAiToolsOpen(false)}
                     className={`block px-4 py-2 text-sm rounded-b-lg transition-colors duration-200 ${
                       isActive("/voxboard")
@@ -349,6 +362,30 @@ export default function ResponsiveNavbar() {
                     role="menuitem"
                   >
                     VoxBoard
+                  </Link>
+                  <Link
+                    to="/interview"
+                    onClick={() => setAiToolsOpen(false)}
+                    className={`block px-4 py-2 text-sm rounded-b-lg transition-colors duration-200 ${
+                      isActive("/interview")
+                        ? "text-[#335441] font-semibold bg-[#F9F6EE]"
+                        : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
+                    }`}
+                    role="menuitem"
+                  >
+                    Create Interview
+                  </Link>
+                  <Link
+                    to="/your-interviews"
+                    onClick={() => setAiToolsOpen(false)}
+                    className={`block px-4 py-2 text-sm rounded-b-lg transition-colors duration-200 ${
+                      isActive("/your-interviews")
+                        ? "text-[#335441] font-semibold bg-[#F9F6EE]"
+                        : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
+                    }`}
+                    role="menuitem"
+                  >
+                    Your Interviews
                   </Link>
                 </div>
               )}
@@ -566,6 +603,18 @@ export default function ResponsiveNavbar() {
               >
                 <Briefcase size={20} />
                 <span>Interview Resources</span>
+              </Link>
+              <Link
+                to="/interview-questions"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 ${
+                  isActive("/interview-questions")
+                    ? "text-[#335441] font-semibold bg-[#F9F6EE]"
+                    : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
+                }`}
+              >
+                <Code size={20} />
+                <span>DSA Questions</span>
               </Link>
             </div>
           )}

@@ -1,14 +1,30 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from "chart.js"
-import { Pie, Bar } from "react-chartjs-2"
-import type { Problem } from "@/types"
+import { useEffect, useState } from "react";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+} from "chart.js";
+import { Pie } from "react-chartjs-2";
+import type { Problem } from "@/types";
+import { TrendingUp, Target, Award } from "lucide-react";
 
-ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement)
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  BarElement
+);
 
 interface ChartsProps {
-  problems: Problem[]
+  problems: Problem[];
 }
 
 const Charts = ({ problems }: ChartsProps) => {
@@ -22,74 +38,111 @@ const Charts = ({ problems }: ChartsProps) => {
         borderWidth: 2,
       },
     ],
-  })
+  });
 
-  const [topProblemsData, setTopProblemsData] = useState({
-    labels: [],
-    datasets: [
-      {
-        label: "Frequency (%)",
-        data: [],
-        backgroundColor: "rgba(107, 143, 96, 0.8)",
-        borderColor: "#6B8F60",
-        borderWidth: 2,
-      },
-    ],
-  })
+  const [stats, setStats] = useState({
+    easy: 0,
+    medium: 0,
+    hard: 0,
+    total: 0,
+    avgFrequency: 0,
+  });
 
   useEffect(() => {
-    // Calculate difficulty distribution
     const difficultyCounts = {
       Easy: 0,
       Medium: 0,
       Hard: 0,
-    }
+    };
+
+    let totalFrequency = 0;
 
     problems.forEach((problem) => {
-      difficultyCounts[problem.difficulty]++
-    })
+      difficultyCounts[problem.difficulty]++;
+      totalFrequency += problem.frequency;
+    });
 
     setDifficultyData((prev) => ({
       ...prev,
       datasets: [
         {
           ...prev.datasets[0],
-          data: [difficultyCounts.Easy, difficultyCounts.Medium, difficultyCounts.Hard],
+          data: [
+            difficultyCounts.Easy,
+            difficultyCounts.Medium,
+            difficultyCounts.Hard,
+          ],
         },
       ],
-    }))
+    }));
 
-    // Calculate top 10 problems by frequency
-    const sortedProblems = [...problems].sort((a, b) => b.frequency - a.frequency).slice(0, 10)
-    const topLabels = sortedProblems.map(problem => {
-      // Truncate long titles to prevent chart clutter
-      return problem.title.length > 20 ? problem.title.substring(0, 20) + "..." : problem.title
-    })
-    const topFrequencies = sortedProblems.map(problem => problem.frequency)
-
-    setTopProblemsData((prev) => ({
-      ...prev,
-      labels: topLabels,
-      datasets: [
-        {
-          ...prev.datasets[0],
-          data: topFrequencies,
-        },
-      ],
-    }))
-  }, [problems])
+    setStats({
+      easy: difficultyCounts.Easy,
+      medium: difficultyCounts.Medium,
+      hard: difficultyCounts.Hard,
+      total: problems.length,
+      avgFrequency: problems.length > 0 ? totalFrequency / problems.length : 0,
+    });
+  }, [problems]);
 
   if (problems.length === 0) {
-    return null
+    return null;
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-      <div className="bg-gradient-to-br from-white to-[#F9F6EE] p-6 md:p-8 rounded-2xl shadow-lg border border-[#A9B782]/40">
-        <h3 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-center bg-gradient-to-r from-[#335441] to-[#46704A] bg-clip-text text-transparent">
-          Difficulty Distribution
-        </h3>
-        <div className="h-72 md:h-80">
+    <div className="space-y-6">
+      {/* Stats Cards */}
+      <div className="bg-gradient-to-br from-white to-[#F9F6EE] p-6 rounded-2xl shadow-xl border-2 border-[#E4D7B4]">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 bg-gradient-to-br from-[#335441] to-[#46704A] rounded-xl flex items-center justify-center shadow-lg">
+            <TrendingUp className="w-5 h-5 text-white" />
+          </div>
+          <h3 className="text-lg font-bold text-[#335441]">Statistics</h3>
+        </div>
+
+        <div className="space-y-3">
+          <div className="flex items-center justify-between p-3 bg-[#F9F6EE] rounded-lg border border-[#E4D7B4]">
+            <span className="text-sm text-[#6B8F60] font-medium">
+              Total Problems
+            </span>
+            <span className="text-xl font-bold text-[#335441]">
+              {stats.total}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
+            <span className="text-sm text-green-700 font-medium">🟢 Easy</span>
+            <span className="text-xl font-bold text-green-800">
+              {stats.easy}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+            <span className="text-sm text-yellow-700 font-medium">
+              🟡 Medium
+            </span>
+            <span className="text-xl font-bold text-yellow-800">
+              {stats.medium}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-200">
+            <span className="text-sm text-red-700 font-medium">🔴 Hard</span>
+            <span className="text-xl font-bold text-red-800">{stats.hard}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Difficulty Distribution Chart */}
+      <div className="bg-gradient-to-br from-white to-[#F9F6EE] p-6 rounded-2xl shadow-xl border-2 border-[#E4D7B4]">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 bg-gradient-to-br from-[#46704A] to-[#6B8F60] rounded-xl flex items-center justify-center shadow-lg">
+            <Target className="w-5 h-5 text-white" />
+          </div>
+          <h3 className="text-lg font-bold text-[#335441]">Distribution</h3>
+        </div>
+
+        <div className="h-64">
           <Pie
             data={difficultyData}
             options={{
@@ -98,9 +151,9 @@ const Charts = ({ problems }: ChartsProps) => {
                 legend: {
                   position: "bottom",
                   labels: {
-                    padding: 15,
+                    padding: 12,
                     font: {
-                      size: 12,
+                      size: 11,
                       weight: 500,
                     },
                     color: "#335441",
@@ -118,82 +171,40 @@ const Charts = ({ problems }: ChartsProps) => {
                   borderRadius: 8,
                   usePointStyle: true,
                   callbacks: {
-                    label: function(context) {
-                      return `${context.label}: ${context.parsed} problems`;
-                    }
-                  }
-                }
+                    label: function (context) {
+                      const total = context.dataset.data.reduce(
+                        (a: number, b: number) => a + b,
+                        0
+                      );
+                      const percentage = (
+                        (context.parsed / total) *
+                        100
+                      ).toFixed(1);
+                      return `${context.label}: ${context.parsed} (${percentage}%)`;
+                    },
+                  },
+                },
               },
-              cutout: "65%",
-              rotation: -90,
-              circumference: 180,
+              cutout: "60%",
               responsive: true,
             }}
           />
         </div>
       </div>
-      <div className="bg-gradient-to-br from-white to-[#F9F6EE] p-6 md:p-8 rounded-2xl shadow-lg border border-[#A9B782]/40">
-        <h3 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-center bg-gradient-to-r from-[#335441] to-[#46704A] bg-clip-text text-transparent">
-          Top 10 Most Frequent Questions
-        </h3>
-        <div className="h-72 md:h-80">
-          <Bar
-            data={topProblemsData}
-            options={{
-              indexAxis: 'y', // Horizontal bar chart
-              maintainAspectRatio: false,
-              plugins: {
-                legend: {
-                  display: false,
-                },
-                tooltip: {
-                  backgroundColor: "rgba(255, 255, 255, 0.95)",
-                  titleColor: "#335441",
-                  bodyColor: "#6B8F60",
-                  borderColor: "#A9B782",
-                  borderWidth: 1,
-                  padding: 12,
-                  borderRadius: 8,
-                  callbacks: {
-                    label: function(context) {
-                      return `Frequency: ${context.parsed.x}%`;
-                    }
-                  }
-                }
-              },
-              scales: {
-                x: {
-                  beginAtZero: true,
-                  max: Math.max(...topProblemsData.datasets[0].data) * 1.1, // Add 10% padding to the max value
-                  ticks: {
-                    color: "#6B8F60",
-                    font: {
-                      size: 10,
-                    },
-                  },
-                  grid: {
-                    color: "rgba(169, 183, 130, 0.2)",
-                  },
-                },
-                y: {
-                  ticks: {
-                    color: "#6B8F60",
-                    font: {
-                      size: 10,
-                    },
-                  },
-                  grid: {
-                    display: false,
-                  },
-                },
-              },
-              responsive: true,
-            }}
-          />
+
+      {/* Average Frequency */}
+      <div className="bg-gradient-to-br from-[#335441] to-[#46704A] p-6 rounded-2xl shadow-xl text-white">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+            <Award className="w-5 h-5 text-white" />
+          </div>
+          <h3 className="text-lg font-bold">Avg. Frequency</h3>
         </div>
+        <p className="text-4xl font-bold">{stats.avgFrequency.toFixed(2)}%</p>
+        <p className="text-sm text-[#E4D7B4] mt-2">Across all problems</p>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Charts
+export default Charts;
