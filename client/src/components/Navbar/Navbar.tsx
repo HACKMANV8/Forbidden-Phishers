@@ -206,7 +206,7 @@ export default function ResponsiveNavbar() {
                   className="absolute left-0 mt-2 w-48 bg-white border-2 border-[#E4D7B4] rounded-lg shadow-lg z-50"
                   role="menu"
                 >
-                  <Link
+                  {/* <Link
                     to="/pdfs"
                     onClick={() => setResourcesOpen(false)}
                     className={`block px-4 py-2 text-sm rounded-t-lg transition-colors duration-200 ${
@@ -229,7 +229,7 @@ export default function ResponsiveNavbar() {
                     role="menuitem"
                   >
                     E-books
-                  </Link>
+                  </Link> */}
                   <Link
                     to="/interview-resources"
                     onClick={() => setResourcesOpen(false)}
@@ -259,7 +259,7 @@ export default function ResponsiveNavbar() {
             </div>
 
             {/* Keep Discussions as a normal nav link */}
-            <Link
+            {/* <Link
               to="/discussions"
               className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 ${
                 isActive("/discussions")
@@ -268,7 +268,7 @@ export default function ResponsiveNavbar() {
               }`}
             >
               <span>Discussions</span>
-            </Link>
+            </Link> */}
 
             <div
               className="relative"
@@ -315,7 +315,7 @@ export default function ResponsiveNavbar() {
                   >
                     Courses
                   </Link>
-                  <Link
+                  {/* <Link
                     to="/roadmaps"
                     onClick={() => setAiToolsOpen(false)}
                     className={`block px-4 py-2 text-sm transition-colors duration-200 ${
@@ -326,7 +326,7 @@ export default function ResponsiveNavbar() {
                     role="menuitem"
                   >
                     Roadmaps
-                  </Link>
+                  </Link> */}
                   <Link
                     to="/pdf-chat"
                     onClick={() => setAiToolsOpen(false)}

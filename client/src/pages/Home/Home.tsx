@@ -34,19 +34,7 @@ const Home = () => {
         "Practice interviews with realistic 3D avatars powered by AI in real-time",
       color: "#335441",
     },
-    {
-      icon: Brain,
-      title: "AI Tutor",
-      description:
-        "Get personalized learning assistance from your intelligent AI companion",
-      color: "#46704A",
-    },
-    {
-      icon: Map,
-      title: "AI Powered Roadmaps",
-      description: "Customized learning paths tailored to your career goals",
-      color: "#6B8F60",
-    },
+
     {
       icon: GraduationCap,
       title: "Smart Courses & Certification",
@@ -59,18 +47,6 @@ const Home = () => {
       title: "3D Podcast Studio",
       description: "Experience podcasts with immersive 3D AI models",
       color: "#46704A",
-    },
-    {
-      icon: Video,
-      title: "Topic Explainer Videos",
-      description: "Generate custom explainer videos for any topic instantly",
-      color: "#6B8F60",
-    },
-    {
-      icon: Users,
-      title: "Community Discussions",
-      description: "Connect and collaborate with fellow developers",
-      color: "#335441",
     },
     {
       icon: FileText,
@@ -242,7 +218,7 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
             {coreFeatures.map((feature, index) => {
               const Icon = feature.icon;
               return (
@@ -262,9 +238,6 @@ const Home = () => {
                   <p className="text-[#6B8F60] leading-relaxed mb-4">
                     {feature.description}
                   </p>
-                  <button className="text-[#46704A] font-semibold flex items-center gap-2 group-hover:gap-3 transition-all text-sm">
-                    Learn more <ArrowRight className="w-4 h-4" />
-                  </button>
                 </div>
               );
             })}
@@ -285,17 +258,17 @@ const Home = () => {
           </div>
 
           <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-black/20 backdrop-blur-sm border-4 border-white/20">
-            <div className="aspect-video flex items-center justify-center">
-              {/* Placeholder for YouTube video */}
-              <div className="text-center">
-                <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 cursor-pointer hover:bg-white/30 transition-all">
-                  <Play className="w-10 h-10 text-white ml-1" />
-                </div>
-                <p className="text-white text-lg">Click to watch demo</p>
-                <p className="text-[#E4D7B4] text-sm mt-2">
-                  YouTube video will be embedded here
-                </p>
-              </div>
+            <div className="aspect-video relative">
+              <iframe
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/m0as4uMox_U"
+                title="PrepX Platform Demo"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 w-full h-full"
+              ></iframe>
             </div>
           </div>
         </div>
