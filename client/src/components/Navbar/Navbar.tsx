@@ -282,7 +282,7 @@ export default function ResponsiveNavbar() {
                   aiToolsOpen ||
                   isActive("/courses") ||
                   isActive("/roadmaps") ||
-                  isActive("/pdf-chatbot") ||
+                  isActive("/pdf-chat") ||
                   isActive("/podcasts")
                     ? "text-[#335441] font-semibold"
                     : "text-[#6B8F60] hover:text-[#335441]"
@@ -328,10 +328,10 @@ export default function ResponsiveNavbar() {
                     Roadmaps
                   </Link>
                   <Link
-                    to="/pdf-chatbot"
+                    to="/pdf-chat"
                     onClick={() => setAiToolsOpen(false)}
                     className={`block px-4 py-2 text-sm transition-colors duration-200 ${
-                      isActive("/pdf-chatbot")
+                      isActive("/pdf-chat")
                         ? "text-[#335441] font-semibold bg-[#F9F6EE]"
                         : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
                     }`}
@@ -677,10 +677,10 @@ export default function ResponsiveNavbar() {
                 <span>Roadmaps</span>
               </Link>
               <Link
-                to="/pdf-chatbot"
+                to="/pdf-chat"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 ${
-                  isActive("/pdf-chatbot")
+                  isActive("/pdf-chat")
                     ? "text-[#335441] font-semibold bg-[#F9F6EE]"
                     : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
                 }`}
