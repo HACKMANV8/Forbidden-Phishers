@@ -67,17 +67,19 @@ const mainLayoutRoutes = [
   {
     path: "/interview-questions",
     element: <InterviewQuestions />,
-  },{
-        path: "/interview",
-        element: <InterviewHelp />,
-    },
-    {
-        path: "/your-interviews",
-        element: <YourInterviews />,
-    },{
-        path: "/interview/results/:interviewId",
-        element: <Results />,
-    }
+  },
+  {
+    path: "/interview",
+    element: <InterviewHelp />,
+  },
+  {
+    path: "/your-interviews",
+    element: <YourInterviews />,
+  },
+  {
+    path: "/interview/results/:interviewId",
+    element: <Results />,
+  },
 ];
 
 const protectedRoutes = [
@@ -138,10 +140,10 @@ const router = createBrowserRouter([
         path: "/reset-password/:resetToken",
         element: <PasswordResetForm />,
       },
-       {
-                path: "/interview/:interviewId",
-                element: <Interview />,
-            },
+      {
+        path: "/interview/:interviewId",
+        element: <Interview />,
+      },
       {
         path: "*",
         element: <NotFound />,
