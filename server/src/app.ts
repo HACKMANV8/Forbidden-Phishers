@@ -11,6 +11,7 @@ import passportConfig from './config/passport';
 import authRouter from './auth/authRoute';
 import podcastRouter from './podcast/podcasts';
 import courseRouter from "./courses/courseRoute";
+import industryInsightsRouter from "./industry/industryInsights";
 
 
 
@@ -65,6 +66,7 @@ app.use("/api/v1/auth", authRouter);
 app.use('/api/podcasts', podcastRouter);
 
 app.use("/api/v1/courses", courseRouter);
+app.use("/api/industry", industryInsightsRouter);
 app.use(globalErrorHandler);
 
 export { server, io };

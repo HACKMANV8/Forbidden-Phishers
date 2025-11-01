@@ -21,6 +21,7 @@ import PdfChat from "./pages/PdfChat/PdfChat";
 import InterviewQuestions from "./pages/InterviewQues/InterviewQuestions";
 import PodcastPage from "@/pages/Podcast/PodcastPage";
 import PodcastPlayerPage from "@/pages/Podcast/PodcastPlayerPage";
+import IndustryInsightsComponent from "./pages/IndustryInsights/IndustryInsights";
 
 const mainLayoutRoutes = [
   {
@@ -59,6 +60,10 @@ const mainLayoutRoutes = [
   {
     path: "/podcasts/:id",
     element: <PodcastPlayerPage />,
+  },
+  {
+    path: "/industry-insights",
+    element: <IndustryInsightsComponent />,
   },
 ];
 
